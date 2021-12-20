@@ -6,8 +6,10 @@ using namespace std;
 Game::Game() {
     size = 15;
     grid = new int*[size];
+    lastGrid = new int*[size];
     for (int i = 0; i < size; i++) {
         grid[i] = new int[size];
+        lastGrid[i] = new int[size];
     }
     initGrid();
     setWhoFirst(1);                 //black first
@@ -46,6 +48,17 @@ int** Game::getGrid()
 {
     return grid;
 }
+//set grid data
+void Game::setGrid(int **newGird)
+{
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++)
+        {
+            grid[i][j] = newGird[i][j];
+        }
+    }
+}
+
 
 //get last grid data
 int ** Game::getLastGrid()
@@ -55,7 +68,12 @@ int ** Game::getLastGrid()
 //set last grid data
 void Game::setLastGrid(int **last)
 {
-    lastGrid = last;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++)
+        {
+            lastGrid[i][j] = last[i][j];
+        }
+    }
 }
 
 
@@ -95,6 +113,7 @@ bool Game::getIsOver()
 //show current grid state
 void Game::printGrid()
 {
+    cout << "================\n";
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++)
         {
@@ -115,12 +134,15 @@ void Game::printGrid()
         }
         cout << '\n';
     }
+    cout << "================\n";
 }
 
 //place the piece
 bool Game::putChess(int i, int j)
 {
     if (!isOver && grid[i][j] == 0)	{
+//        **lastGrid = **grid;
+        setLastGrid(grid);
         grid[i][j] = getCurUser();
 //        setCurUser(getCurUser()*-1);   //change the current user after putting the piece
     }else {
@@ -161,7 +183,6 @@ void Game::checkOver()
     if(!getIsOver())
     {
         setCurUser(getCurUser()*-1);   //change the current user after putting the piece
-
     }
 }
 //check whether there is a line

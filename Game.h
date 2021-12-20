@@ -9,6 +9,7 @@ public:
     void initGrid();				//initialize the board
     void printGrid();				//show current grid state
     int ** getGrid();               //get grid data
+    void setGrid(int **);           //set grid data
 
     bool putChess(int,int);			//place the piece
 

@@ -70,10 +70,10 @@ void GoBangWidget::paintEvent(QPaintEvent *)
     p.drawPoint(10+linesGap*3,10+linesGap*11);
     p.drawPoint(linesGap*11+10,linesGap*11+10);
 
-    int **gridData = game.getGrid();
+//    int **gridData = game.getGrid();
     for (int i=0; i<linesNum;i++) {
         for (int j=0; j<linesNum; j++) {
-            int color = gridData[i][j];
+            int color = game.getGrid()[i][j];
             QPixmap *chess = new QPixmap;
             if(color == 1){
                 chess->load(blackChess);
@@ -105,7 +105,7 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
         qDebug() << "Y:" << clickY;
 //        game.runGame(clickX,clickY);
 //        update();
-        qDebug()<<game.getCurUser();
+        qDebug()<<"CurUser:"<<game.getCurUser();
         if(canPlay && clickX>=0&&clickX<linesNum&&clickY>=0&&clickY<linesNum){
             runGame();
         }
@@ -148,7 +148,7 @@ void GoBangWidget::setGameMsg(QString msg)
 void GoBangWidget::runGame()
 {
     if(!game.getIsOver()){
-        game.setLastGrid(game.getGrid());
+//        game.setLastGrid(game.getGrid());
         game.printGrid();
         game.setGameMsg(game.getCurUser() == 1 ? "黑棋已落棋,请白棋行!" : "白棋已落棋,请黑棋行!");
         if (!game.putChess(clickX, clickY)) {
@@ -168,5 +168,19 @@ void GoBangWidget::runGame()
 //repent the game
 void GoBangWidget::repentGame()
 {
-
+    if(!game.getIsOver())
+    {
+        game.setGrid(game.getLastGrid());
+        game.setCurUser(game.getCurUser()*-1);
+        game.setIsOver(false);
+        canPlay = true;
+        game.setGameMsg(game.getCurUser() == 1 ? "黑棋悔棋,请重新落子!" : "白棋悔棋,请重新落子!");
+        setGameMsg(QString::fromStdString(game.getGameMsg()));
+    }
+    else
+    {
+        game.setGameMsg("棋局已结束，不能悔棋!");
+        setGameMsg(QString::fromStdString(game.getGameMsg()));
+    }
+    update();
 }
