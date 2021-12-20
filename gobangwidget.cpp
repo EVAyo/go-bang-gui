@@ -12,30 +12,29 @@ GoBangWidget::GoBangWidget(QWidget *parent)
     linesGap = 30;
     clickX = 0;
     clickY = 0;
+    moveX = -1;
+    moveY = -1;
     blackChess = ":/chess/imgs/black.png";
     whiteChess = ":/chess/imgs/white.png";
     canPlay = false;
+    canRepent = false;
 
     /*main windows*/
     this->setFixedSize((linesNum-1)*linesGap+200,(linesNum-1)*linesGap+20);
     this->setWindowTitle("GoBang");
     this->setWindowIcon(QIcon(":/chess/imgs/logo.png"));
+    this->setMouseTracking(true);
 
     /*board*/
     boardFrame = new QFrame(this);
     boardFrame->setObjectName("board");
-//    qDebug() << boardFrame->objectName();
     boardFrame->setGeometry(QRect(10,10,(linesNum-1)*linesGap+1,(linesNum-1)*linesGap+1));
     boardFrame->setFrameShape(QFrame::Box);
     boardFrame->setLineWidth(2);
     boardFrame->raise();
+    boardFrame->setMouseTracking(true);
 
-    /*mouse event*/
-    QCursor cursor;                      // 创建光标对象
-//    cursor.setShape(Qt::OpenHandCursor); // 设置光标形状
-    setCursor(cursor);
     /*Buttons tool*/
-
     connect(ui->gameStartBtn,SIGNAL(clicked()),this,SLOT(gameStart()));
     connect(ui->giveUpBtn,SIGNAL(clicked()),this,SLOT(giveUpGame()));
     connect(ui->repentGameBtn,SIGNAL(clicked()),this,SLOT(repentGame()));
@@ -70,7 +69,12 @@ void GoBangWidget::paintEvent(QPaintEvent *)
     p.drawPoint(10+linesGap*3,10+linesGap*11);
     p.drawPoint(linesGap*11+10,linesGap*11+10);
 
-//    int **gridData = game.getGrid();
+    //draw following points
+    pen.setColor(Qt::red);
+    pen.setWidth(5);
+    p.setPen(pen);
+    p.drawPoint(10+linesGap*moveY,10+linesGap*moveX);
+
     for (int i=0; i<linesNum;i++) {
         for (int j=0; j<linesNum; j++) {
             int color = game.getGrid()[i][j];
@@ -85,8 +89,33 @@ void GoBangWidget::paintEvent(QPaintEvent *)
             delete chess;
         }
     }
-//    printGrid(p);
 
+    if(game.getWinPos()[2] != -1)
+    {
+        int r = game.getWinPos()[0];
+        int c = game.getWinPos()[1];
+        int dirc = game.getWinPos()[2];
+        pen.setWidth(2);
+        pen.setStyle(Qt::PenStyle::DashLine);//虚线
+        pen.setColor(Qt::red);
+        p.setPen(pen);
+        switch (dirc) {
+        case 1:	/*right*/
+            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*(c+4),11+linesGap*r);
+            break;
+        case 2:	/*right-down*/
+            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*(c+4),11+linesGap*(r+4));
+            break;
+        case 3:	/*down*/
+            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*c,11+linesGap*(r+4));
+            break;
+        case 4:	/*left-down*/
+            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*(c-4),11+linesGap*(r+4));
+            break;
+        default:
+            break;
+        }
+    }
 
     p.end();
 }
@@ -95,22 +124,38 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
 {
     if(event->button() == Qt::LeftButton){       // 如果是鼠标左键按下
         QCursor cursor;
-//        cursor.setShape(Qt::ClosedHandCursor);
-        QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
         offset = event->globalPos() - pos();    // 获取指针位置和窗口位置的差值
-//        ui->label_tip->setText();
         clickY = round((offset.x() - 10)/linesGap);
         clickX = round((offset.y() - 40)/linesGap);
         qDebug() << "X:" << clickX;
         qDebug() << "Y:" << clickY;
-//        game.runGame(clickX,clickY);
-//        update();
         qDebug()<<"CurUser:"<<game.getCurUser();
         if(canPlay && clickX>=0&&clickX<linesNum&&clickY>=0&&clickY<linesNum){
+            cursor.setShape(Qt::CrossCursor);
+            QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
             runGame();
         }
     }
+}
 
+void GoBangWidget::mouseReleaseEvent(QMouseEvent *) // 鼠标松开事件
+{
+    QCursor cursor;
+    cursor.setShape(Qt::ArrowCursor);
+    QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
+}
+
+void GoBangWidget::mouseMoveEvent(QMouseEvent *event) // 鼠标移动事件
+{
+    offset = event->globalPos() - pos();    // 获取指针位置和窗口位置的差值
+    moveY = round((offset.x() - 10)/linesGap);
+    moveX = round((offset.y() - 40)/linesGap);
+    if(moveX>=0&&moveX<linesNum&&moveY>=0&&moveY<linesNum)
+    {
+//        qDebug() << "moveX:" << moveX;
+//        qDebug() << "moveY:" << moveY;
+        update();
+    }
 }
 
 //start the game
@@ -119,6 +164,7 @@ void GoBangWidget::gameStart()
     game.setWhoFirst(ui->firstWhoBox->currentIndex()==0?1:-1);
     game.initGrid();
     canPlay = true;
+    canRepent = true;
     ui->gameStartBtn->setText("重开");
     ui->giveUpBtn->setEnabled(true);
     setGameMsg(QString::fromStdString("请")+ui->firstWhoBox->currentText());
@@ -130,7 +176,6 @@ void GoBangWidget::giveUpGame()
 {
     ui->giveUpBtn->setEnabled(false);
     std::string res = (game.getCurUser() == -1 ? "黑棋" : "白棋");
-//    game.setGameMsg("恭喜" + res + "胜利!游戏结束!");
     game.setGameMsg("你认输了!恭喜" + res + "胜利!");
     setGameMsg(QString::fromStdString(game.getGameMsg()));
     update();
@@ -148,14 +193,14 @@ void GoBangWidget::setGameMsg(QString msg)
 void GoBangWidget::runGame()
 {
     if(!game.getIsOver()){
-//        game.setLastGrid(game.getGrid());
-        game.printGrid();
         game.setGameMsg(game.getCurUser() == 1 ? "黑棋已落棋,请白棋行!" : "白棋已落棋,请黑棋行!");
         if (!game.putChess(clickX, clickY)) {
             game.putChess(clickX, clickY);
         }else{
             game.checkOver();
+            canRepent = true;
         }
+
     }else{
         std::string res = (game.getCurUser() == 1 ? "黑棋" : "白棋");
         game.setGameMsg("恭喜" + res + "胜利!游戏结束!");
@@ -170,17 +215,24 @@ void GoBangWidget::repentGame()
 {
     if(!game.getIsOver())
     {
-        game.setGrid(game.getLastGrid());
-        game.setCurUser(game.getCurUser()*-1);
-        game.setIsOver(false);
-        canPlay = true;
-        game.setGameMsg(game.getCurUser() == 1 ? "黑棋悔棋,请重新落子!" : "白棋悔棋,请重新落子!");
-        setGameMsg(QString::fromStdString(game.getGameMsg()));
+
+        if(canRepent)
+        {
+            game.setGrid(game.getLastGrid());
+            game.setCurUser(game.getCurUser()*-1);
+            game.setIsOver(false);
+            canPlay = true;
+            canRepent = false;
+            game.setGameMsg(game.getCurUser() == 1 ? "黑棋悔棋,请重新落子!" : "白棋悔棋,请重新落子!");
+        }
+        else{
+            game.setGameMsg("不能再悔棋了!");
+        }
     }
     else
     {
         game.setGameMsg("棋局已结束，不能悔棋!");
-        setGameMsg(QString::fromStdString(game.getGameMsg()));
     }
+    setGameMsg(QString::fromStdString(game.getGameMsg()));
     update();
 }

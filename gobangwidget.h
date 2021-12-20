@@ -33,16 +33,17 @@ private:
 
     int clickX;
     int clickY;
+    int moveX;
+    int moveY;
 
     bool canPlay;
+    bool canRepent;
 
     void setGameMsg(QString);
     void paintEvent(QPaintEvent *);
     void runGame();
 
-//signals:
 
-//    void putChess(int,int,QFrame *);
 public slots:
     void gameStart();
     void giveUpGame();
@@ -50,8 +51,8 @@ public slots:
 
 protected:
     void mousePressEvent(QMouseEvent *event);
-//    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 //    void mouseDoubleClickEvent(QMouseEvent *event);
-//    void mouseMoveEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 };
 #endif // GOBANGWIDGET_H

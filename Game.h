@@ -8,8 +8,12 @@ public:
     Game();
     void initGrid();				//initialize the board
     void printGrid();				//show current grid state
+
     int ** getGrid();               //get grid data
     void setGrid(int **);           //set grid data
+
+    void setWinPos(int,int,int);
+    int * getWinPos();
 
     bool putChess(int,int);			//place the piece
 
@@ -34,6 +38,7 @@ private:
     int size;           //grid size
     int **grid;         //grid array
     int **lastGrid;     //x,y,current user
+    int winPos[3];      //the location of the first point
     bool isOver;        //game over?
     int curUser;        //current user 1:black -1:white
     int firstPlay;      //who first 1:black -1:white

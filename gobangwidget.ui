@@ -322,7 +322,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>20</height>
+        <height>15</height>
        </size>
       </property>
      </spacer>
@@ -334,6 +334,16 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 39, 32);</string>
       </property>
       <property name="text">
        <string>点击开始按钮进行游戏！</string>
@@ -493,7 +503,7 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>20</height>
+          <height>25</height>
          </size>
         </property>
        </spacer>

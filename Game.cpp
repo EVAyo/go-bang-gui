@@ -25,6 +25,7 @@ void Game::initGrid()
             lastGrid[i][j] = 0;
         }
     }
+    setWinPos(-1,-1,-1);            //r,c,dirc
     setIsOver(false);
     setCurUser(getWhoFirst());      //current black
     string who = getWhoFirst()== 1 ? "黑棋" : "白棋";
@@ -42,6 +43,18 @@ int Game::getWhoFirst()
     return firstPlay;
 }
 
+//set Win Pos
+void Game::setWinPos(int r,int c,int dirc)
+{
+    winPos[0] = r;
+    winPos[1] = c;
+    winPos[2] = dirc;
+}
+//get Win Pos
+int * Game::getWinPos()
+{
+    return winPos;
+}
 
 //get grid data
 int** Game::getGrid()
@@ -158,7 +171,6 @@ bool Game::putChess(int i, int j)
 void Game::checkOver()
 {
     int* ckResult;					//the check result of every grid
-    int r = -1, c = -1;
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -170,8 +182,7 @@ void Game::checkOver()
             ckResult = checkLine(i,j);
             if (ckResult[0] == 1)
             {
-                r = i;				//a line has been found
-                c = j;
+                setWinPos(i,j,ckResult[1]);
                 string res = (getCurUser() == 1 ? "黑棋" : "白棋");
                 setGameMsg("游戏结束!" + res + "胜利!");
                 setIsOver(true);
@@ -196,8 +207,8 @@ dirc:
 */
 int * Game::checkLine(int r, int c)
 {
-//    int result[5] = { 0,0,0,0,0 };	//results in 4 directions
-    int *result = new int[5]{};
+//    int result[2] = { 0,0 };	//results,dirc
+    int *result = new int[2]{};
     for (int d = 1; d <= 4; d++)
     {
         int num = 0;
@@ -268,7 +279,7 @@ int * Game::checkLine(int r, int c)
         }
         if (num == winFlag - 1)		//there are enough identical grid
         {
-            result[d] = 1;
+            result[1] = d;
             result[0] = 1;
         }
     }
