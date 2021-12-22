@@ -25,6 +25,7 @@ void Game::initGrid()
             lastGrid[i][j] = 0;
         }
     }
+    gameMode = 0;                   //PVP
     setWinPos(-1,-1,-1);            //r,c,dirc
     setIsOver(false);
     setCurUser(getWhoFirst());      //current black
@@ -122,6 +123,18 @@ bool Game::getIsOver()
 {
     return isOver;
 }
+
+//set GameMode
+void Game::setGameMode(int mode)
+{
+    gameMode = mode;
+}
+//get GameMode
+int Game::getGameMode()
+{
+    return gameMode;
+}
+
 
 //show current grid state
 void Game::printGrid()

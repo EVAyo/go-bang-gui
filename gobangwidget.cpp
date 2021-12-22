@@ -1,8 +1,10 @@
 #include "gobangwidget.h"
 #include "ui_gobangwidget.h"
+#include "Online.h"
 #include <QDebug>
 #include <string>
 #include <math.h>
+#include <QHeaderView>
 GoBangWidget::GoBangWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::GoBangWidget)
@@ -38,6 +40,9 @@ GoBangWidget::GoBangWidget(QWidget *parent)
     connect(ui->gameStartBtn,SIGNAL(clicked()),this,SLOT(gameStart()));
     connect(ui->giveUpBtn,SIGNAL(clicked()),this,SLOT(giveUpGame()));
     connect(ui->repentGameBtn,SIGNAL(clicked()),this,SLOT(repentGame()));
+
+    connect(ui->gameModeBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(selectGameMode()));
+
 }
 
 GoBangWidget::~GoBangWidget()
@@ -134,7 +139,31 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
             cursor.setShape(Qt::CrossCursor);
             QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
             runGame();
+            nextStep();
+            runGame();
         }
+    }
+}
+
+void GoBangWidget::nextStep()
+{
+    ChessMsg CM = online->processMsg();
+    switch (CM.msgType) {
+        case 0:
+            clickX = CM.r;
+            clickY = CM.c;
+            game.setCurUser(CM.color);
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case -1:
+            break;
+
+
     }
 }
 
@@ -199,6 +228,10 @@ void GoBangWidget::runGame()
         }else{
             game.checkOver();
             canRepent = true;
+            if(game.getGameMode()==2)
+            {
+                online->sendMessage(Online::ChessPos,ChessMsg{1,online->getMyIP(),clickX,clickY,game.getCurUser()});
+            }
         }
 
     }else{
@@ -235,4 +268,92 @@ void GoBangWidget::repentGame()
     }
     setGameMsg(QString::fromStdString(game.getGameMsg()));
     update();
+}
+
+//select Game Mode
+void GoBangWidget::selectGameMode()
+{
+    int lastMode = game.getGameMode();
+    int newMode = ui->gameModeBox->currentIndex();
+    switch (newMode) {
+        case 0:
+            if(lastMode == 2)
+            {
+                onlineOff();
+            }
+            game.setGameMode(0);
+
+            break;
+        case 1:
+            if(lastMode == 2)
+            {
+                onlineOff();
+            }
+            game.setGameMode(1);
+            break;
+        case 2:
+            gameStart();
+            onlineGame();
+            game.setGameMode(2);
+            break;
+    }
+}
+
+//start online game
+void GoBangWidget::onlineGame()
+{
+//    online.sendMessage(Online::NewParticipant);
+    online = new Online();
+    online->init();
+    showOnlineUser();
+}
+
+//close online game
+void GoBangWidget::onlineOff()
+{
+    if(online->getOnlineState())
+    {
+        online->~Online();
+        online = nullptr;
+        //clear all item
+        while (ui->onlineUserWidget->rowCount()>0)
+        {
+            ui->onlineUserWidget->removeRow(0);
+        }
+    }
+}
+
+void GoBangWidget::showOnlineUser()
+{
+    //clear all item
+    while (ui->onlineUserWidget->rowCount()>0)
+    {
+        ui->onlineUserWidget->removeRow(0);
+    }
+    ui->onlineUserWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->onlineUserWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    std::vector<OnlineUser> * allUsers = online->getOnlineUser();
+    for (int i=0;i<int(allUsers->size());i++)
+    {
+        QTableWidgetItem * ip = new QTableWidgetItem(allUsers->at(i).ipAddress);
+        QPushButton *pBtn = new QPushButton(allUsers->at(i).isFree?"对战":"游戏中");
+        pBtn->setFixedSize(40,20);
+        pBtn->setObjectName("userBtn"+QString(i));
+        connect(pBtn,SIGNAL(clicked()),this,SLOT(onlinePK()));
+
+        ui->onlineUserWidget->insertRow(i);
+        ui->onlineUserWidget->setItem(i,0,ip);
+        ui->onlineUserWidget->setCellWidget(i,1,pBtn);
+    }
+}
+
+//select a user to pk
+void GoBangWidget::onlinePK()
+{
+    QString btnName = QObject::sender()->objectName();
+    int index = (btnName.midRef(7,-1)).toInt();
+    qDebug() << index;
+//    QString rivalIP = online->getOnlineUser()->at(index).ipAddress;
+    online->setRivalIP(online->getOnlineUser()->at(index).ipAddress);
+
 }

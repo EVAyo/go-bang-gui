@@ -29,6 +29,9 @@ public:
     void setIsOver(bool);
     bool getIsOver();
 
+    void setGameMode(int);
+    int getGameMode();
+
     void setWhoFirst(int);
     int getWhoFirst();
 
@@ -40,6 +43,7 @@ private:
     int **lastGrid;     //x,y,current user
     int winPos[3];      //the location of the first point
     bool isOver;        //game over?
+    int gameMode;       //0:PVP 1:PVE 3:online
     int curUser;        //current user 1:black -1:white
     int firstPlay;      //who first 1:black -1:white
     const int winFlag = 5;	//condition for winning the game

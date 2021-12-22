@@ -7,6 +7,7 @@
 #include <QIcon>
 #include <QMouseEvent>
 #include "Game.h"
+#include "Online.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GoBangWidget; }
@@ -30,6 +31,7 @@ private:
     QFrame *boardFrame;
     QPoint offset;
     Game game;
+    Online * online;
 
     int clickX;
     int clickY;
@@ -43,11 +45,17 @@ private:
     void paintEvent(QPaintEvent *);
     void runGame();
 
+    void showOnlineUser();
+    void onlineGame();
+    void onlineOff();
+    void nextStep();
 
 public slots:
     void gameStart();
     void giveUpGame();
     void repentGame();
+    void selectGameMode();
+    void onlinePK();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
