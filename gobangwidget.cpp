@@ -330,6 +330,7 @@ void GoBangWidget::onlineOff()
 void GoBangWidget::recieveMsg()
 {
     online->processMsg();
+    showOnlineUser();
     update();
 }
 

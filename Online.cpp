@@ -57,7 +57,7 @@ void Online::init()
 {
     myIpAddress = getIP();
     sendMessage(NewParticipant);
-    processMsg();
+//    processMsg();
 //    addOnlineUser(myHostName,myIpAddress);
 }
 
