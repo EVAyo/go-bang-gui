@@ -356,6 +356,7 @@ void GoBangWidget::showOnlineUser()
         ui->onlineUserWidget->setItem(i,0,ip);
         ui->onlineUserWidget->setCellWidget(i,1,pBtn);
     }
+    update();
 }
 
 //select a user to pk
