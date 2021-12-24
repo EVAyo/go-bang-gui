@@ -6,7 +6,6 @@ class QUdpSocket;
 
 struct OnlineUser{
     int id;
-    QString hostName;
     QString ipAddress;
     bool isFree;    //free?can play:can not play
 };
@@ -26,17 +25,19 @@ public:
     enum MessageType{ChessPos,NewParticipant,ParticipantLeft,Invite,Refuse};
 //protected:
     void init();
+    QUdpSocket * getSocket();
+
     bool getOnlineState();
     void newParticipant(QString ipAddress);
     void participantLeft(QString ipAddress);
-    void sendMessage(MessageType type,ChessMsg CMsg);
+    void sendMessage(MessageType type,ChessMsg CMsg={-1,"",-1,-1,0});
     ChessMsg processMsg();
 
     QString getMyIP();
     QString getRivalIP();
     void setRivalIP(QString);
 
-    void addOnlineUser(QString,QString);
+    void addOnlineUser(QString);
     void delOnlineUser(QString);
     std::vector<OnlineUser> * getOnlineUser();
 

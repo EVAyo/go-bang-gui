@@ -11,7 +11,9 @@ Online::Online()
     udpSocket = new QUdpSocket();
     port = 8888;
     udpSocket->bind(port,QUdpSocket::ShareAddress|QUdpSocket::ReuseAddressHint);
-//    sendMessage(NewParticipant);
+//    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
+
+    //    sendMessage(NewParticipant);
     onlineUsers = new std::vector<OnlineUser>[MaxUserNums];
 }
 
@@ -21,6 +23,11 @@ Online::~Online()
     udpSocket->close();
     delete udpSocket;
     udpSocket = nullptr;
+}
+
+QUdpSocket * Online::getSocket()
+{
+    return udpSocket;
 }
 
 bool Online::getOnlineState()
@@ -48,17 +55,17 @@ void Online::setRivalIP(QString ip)
 
 void Online::init()
 {
-//    QHostInfo::localHostName();
-    myHostName = QHostInfo::localHostName();
     myIpAddress = getIP();
-    addOnlineUser(myHostName,myIpAddress);
+    sendMessage(NewParticipant);
+    processMsg();
+//    addOnlineUser(myHostName,myIpAddress);
 }
 
 //add Online User
-void Online::addOnlineUser(QString hostName,QString ipAddress)
+void Online::addOnlineUser(QString ipAddress)
 {
     int nums = onlineUsers->size();
-    onlineUsers->push_back({nums+1,hostName,ipAddress,true});
+    onlineUsers->push_back({nums+1,ipAddress,true});
 }
 //get Online User
 std::vector<OnlineUser> * Online::getOnlineUser()
@@ -85,27 +92,24 @@ void Online::sendMessage(MessageType type,ChessMsg CMsg)
 {
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
-//    QString localHostName = QHostInfo::localHostName();
-    out << type << getMyIP();
+    out << type;
     qDebug() << "type out";
     switch(type)
     {
     case ChessPos :
+        out << myIpAddress;
         out << CMsg.c << CMsg.r << CMsg.color;
         break;
-
     case NewParticipant :
-
+        out << myIpAddress;
         break;
-
     case ParticipantLeft :
-
+        out << myIpAddress;
         break;
-
     case Invite :
-
+        out << myIpAddress;
+        out << rivalIpAddress;
         break;
-
     case Refuse :
         break;
     }
@@ -140,6 +144,7 @@ ChessMsg Online::processMsg()
         case NewParticipant:
             in >>ipAddress;
 //            newParticipant(userName,ipAddress);
+            addOnlineUser(ipAddress);
             qDebug() << ipAddress;
             return {1,ipAddress,-1,-1,0};
             break;

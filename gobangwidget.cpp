@@ -1,6 +1,7 @@
 #include "gobangwidget.h"
 #include "ui_gobangwidget.h"
 #include "Online.h"
+#include <QUdpSocket>
 #include <QDebug>
 #include <string>
 #include <math.h>
@@ -305,6 +306,9 @@ void GoBangWidget::onlineGame()
 //    online.sendMessage(Online::NewParticipant);
     online = new Online();
     online->init();
+    connect(ui->refreshBtn,SIGNAL(clicked()),this,SLOT(showOnlineUser()));
+    connect(online->getSocket(), SIGNAL(readyRead()), this, SLOT(recieveMsg()));
+
     showOnlineUser();
 }
 
@@ -321,6 +325,12 @@ void GoBangWidget::onlineOff()
             ui->onlineUserWidget->removeRow(0);
         }
     }
+}
+
+void GoBangWidget::recieveMsg()
+{
+    online->processMsg();
+    update();
 }
 
 void GoBangWidget::showOnlineUser()

@@ -45,7 +45,6 @@ private:
     void paintEvent(QPaintEvent *);
     void runGame();
 
-    void showOnlineUser();
     void onlineGame();
     void onlineOff();
     void nextStep();
@@ -56,6 +55,8 @@ public slots:
     void repentGame();
     void selectGameMode();
     void onlinePK();
+    void showOnlineUser();
+    void recieveMsg();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
