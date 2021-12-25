@@ -23,6 +23,7 @@ public:
 
 private:
     Ui::GoBangWidget *ui;
+    int zoom;
     int linesNum;
     double linesGap;
     QString blackChess;

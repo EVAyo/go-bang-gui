@@ -27,7 +27,7 @@ Online::~Online()
 
 void Online::init()
 {
-    nextPos = {"",-1,-1,0};
+    setNextPos("",-1,-1,0);
     myIpAddress = getIP();
     sendMessage(NewParticipant);
 //    processMsg();

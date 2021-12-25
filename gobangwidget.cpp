@@ -6,13 +6,19 @@
 #include <string>
 #include <math.h>
 #include <QHeaderView>
+#include <QScreen>
+#include <QDebug>
+
 GoBangWidget::GoBangWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::GoBangWidget)
 {
     ui->setupUi(this);
+    zoom = qApp->primaryScreen()->logicalDotsPerInch()/96;
+    qDebug() << zoom;
+
     linesNum = 15;
-    linesGap = 30;
+    linesGap = 30*zoom;
     clickX = 0;
     clickY = 0;
     moveX = -1;
@@ -23,7 +29,7 @@ GoBangWidget::GoBangWidget(QWidget *parent)
     canRepent = false;
 
     /*main windows*/
-    this->setFixedSize((linesNum-1)*linesGap+200,(linesNum-1)*linesGap+20);
+    this->setFixedSize((linesNum-1)*linesGap+200*zoom,(linesNum-1)*linesGap+20*zoom);
     this->setWindowTitle("GoBang");
     this->setWindowIcon(QIcon(":/chess/imgs/logo.png"));
     this->setMouseTracking(true);
@@ -31,11 +37,14 @@ GoBangWidget::GoBangWidget(QWidget *parent)
     /*board*/
     boardFrame = new QFrame(this);
     boardFrame->setObjectName("board");
-    boardFrame->setGeometry(QRect(10,10,(linesNum-1)*linesGap+1,(linesNum-1)*linesGap+1));
+    boardFrame->setGeometry(QRect(10*zoom,10*zoom,(linesNum-1)*linesGap+1,(linesNum-1)*linesGap+1));
     boardFrame->setFrameShape(QFrame::Box);
     boardFrame->setLineWidth(2);
     boardFrame->raise();
     boardFrame->setMouseTracking(true);
+
+    /*Function Frame*/
+    ui->FunctionFrame->setGeometry(QRect((linesNum-1)*linesGap+21*zoom,10*zoom,170*zoom,(linesNum-1)*linesGap));
 
     /*Buttons tool*/
     connect(ui->gameStartBtn,SIGNAL(clicked()),this,SLOT(gameStart()));
@@ -63,23 +72,23 @@ void GoBangWidget::paintEvent(QPaintEvent *)
     //draw lines
     for(int n=0;n<linesNum-1;n++)
     {
-        p.drawLine(10,linesGap*n+10,10+linesGap*(linesNum-1),linesGap*n+10);
-        p.drawLine(linesGap*n+10,10,linesGap*n+10,10+linesGap*(linesNum-1));//Vertical
+        p.drawLine(10*zoom,linesGap*n+10*zoom,10*zoom+linesGap*(linesNum-1),linesGap*n+10*zoom);
+        p.drawLine(linesGap*n+10*zoom,10*zoom,linesGap*n+10*zoom,10*zoom+linesGap*(linesNum-1));//Vertical
     }
     //draw points
     pen.setWidth(5);
     p.setPen(pen);
-    p.drawPoint(10+linesGap*3,10+linesGap*3);
-    p.drawPoint(10+linesGap*11,10+linesGap*3);
-    p.drawPoint(10+linesGap*7,10+linesGap*7);
-    p.drawPoint(10+linesGap*3,10+linesGap*11);
-    p.drawPoint(linesGap*11+10,linesGap*11+10);
+    p.drawPoint(10*zoom+linesGap*3,10*zoom+linesGap*3);
+    p.drawPoint(10*zoom+linesGap*11,10*zoom+linesGap*3);
+    p.drawPoint(10*zoom+linesGap*7,10*zoom+linesGap*7);
+    p.drawPoint(10*zoom+linesGap*3,10*zoom+linesGap*11);
+    p.drawPoint(10*zoom+linesGap*11,10*zoom+linesGap*11);
 
     //draw following points
     pen.setColor(Qt::red);
     pen.setWidth(5);
     p.setPen(pen);
-    p.drawPoint(10+linesGap*moveY,10+linesGap*moveX);
+    p.drawPoint(10*zoom+linesGap*moveY,10*zoom+linesGap*moveX);
 
     for (int i=0; i<linesNum;i++) {
         for (int j=0; j<linesNum; j++) {
@@ -87,10 +96,10 @@ void GoBangWidget::paintEvent(QPaintEvent *)
             QPixmap *chess = new QPixmap;
             if(color == 1){
                 chess->load(blackChess);
-                p.drawPixmap(j*linesGap-4,i*linesGap-4,28,28,*chess);
+                p.drawPixmap(j*linesGap-4*zoom,i*linesGap-4*zoom,28*zoom,28*zoom,*chess);
             }else if(color == -1){
                 chess->load(whiteChess);
-                p.drawPixmap(j*linesGap-4,i*linesGap-4,28,28,*chess);
+                p.drawPixmap(j*linesGap-4*zoom,i*linesGap-4*zoom,28*zoom,28*zoom,*chess);
             }
             delete chess;
         }
@@ -101,22 +110,22 @@ void GoBangWidget::paintEvent(QPaintEvent *)
         int r = game.getWinPos()[0];
         int c = game.getWinPos()[1];
         int dirc = game.getWinPos()[2];
-        pen.setWidth(2);
+        pen.setWidth(2*zoom);
         pen.setStyle(Qt::PenStyle::DashLine);//虚线
         pen.setColor(Qt::red);
         p.setPen(pen);
         switch (dirc) {
         case 1:	/*right*/
-            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*(c+4),11+linesGap*r);
+            p.drawLine(11*zoom+linesGap*c,11*zoom+linesGap*r,11*zoom+linesGap*(c+4),11*zoom+linesGap*r);
             break;
         case 2:	/*right-down*/
-            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*(c+4),11+linesGap*(r+4));
+            p.drawLine(11*zoom+linesGap*c,11*zoom+linesGap*r,11*zoom+linesGap*(c+4),11*zoom+linesGap*(r+4));
             break;
         case 3:	/*down*/
-            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*c,11+linesGap*(r+4));
+            p.drawLine(11*zoom+linesGap*c,11*zoom+linesGap*r,11*zoom+linesGap*c,11*zoom+linesGap*(r+4));
             break;
         case 4:	/*left-down*/
-            p.drawLine(11+linesGap*c,11+linesGap*r,11+linesGap*(c-4),11+linesGap*(r+4));
+            p.drawLine(11*zoom+linesGap*c,11*zoom+linesGap*r,11*zoom+linesGap*(c-4),11*zoom+linesGap*(r+4));
             break;
         default:
             break;
@@ -131,8 +140,8 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
     if(event->button() == Qt::LeftButton){       // 如果是鼠标左键按下
         QCursor cursor;
         offset = event->globalPos() - pos();    // 获取指针位置和窗口位置的差值
-        clickY = round((offset.x() - 10)/linesGap);
-        clickX = round((offset.y() - 40)/linesGap);
+        clickY = round((offset.x() - 10*zoom)/linesGap);
+        clickX = round((offset.y() - 40*zoom)/linesGap);
         qDebug() << "X:" << clickX;
         qDebug() << "Y:" << clickY;
         qDebug()<<"CurUser:"<<game.getCurUser();
@@ -179,14 +188,17 @@ void GoBangWidget::mouseReleaseEvent(QMouseEvent *) // 鼠标松开事件
 void GoBangWidget::mouseMoveEvent(QMouseEvent *event) // 鼠标移动事件
 {
     offset = event->globalPos() - pos();    // 获取指针位置和窗口位置的差值
-    moveY = round((offset.x() - 10)/linesGap);
-    moveX = round((offset.y() - 40)/linesGap);
+    moveY = round((offset.x() - 10*zoom)/linesGap);
+    moveX = round((offset.y() - 40*zoom)/linesGap);
+    QCursor cursor;
     if(moveX>=0&&moveX<linesNum&&moveY>=0&&moveY<linesNum)
     {
 //        qDebug() << "moveX:" << moveX;
 //        qDebug() << "moveY:" << moveY;
-        update();
+        cursor.setShape(Qt::PointingHandCursor);
+        QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
     }
+    update();
 }
 
 //start the game
@@ -340,7 +352,6 @@ void GoBangWidget::recieveMsg()
         nextStep();
         runGame();
     }
-
     showOnlineUser();
     update();
 }
@@ -374,7 +385,7 @@ void GoBangWidget::showOnlineUser()
         }
 //        pBtn->setFixedSize(40,20);
         pBtn->setMaximumWidth(55);
-        pBtn->setObjectName("userBtn"+QString(i));
+        pBtn->setObjectName("userBtn_"+QString::number(i));
         connect(pBtn,SIGNAL(clicked()),this,SLOT(onlinePK()));
 
         ui->onlineUserWidget->insertRow(i);
@@ -388,9 +399,10 @@ void GoBangWidget::showOnlineUser()
 void GoBangWidget::onlinePK()
 {
     QString btnName = QObject::sender()->objectName();
-    int index = (btnName.midRef(7,-1)).toInt();
+    int index = (btnName.split("_")[1]).toInt();
+    qDebug() << this->sender();
     qDebug() << index;
-//    QString rivalIP = online->getOnlineUser()->at(index).ipAddress;
+
     online->setRivalIP(online->getOnlineUser()->at(index).ipAddress);
     qDebug() << "before pk";
     qDebug() << "rival" << online->getRivalIP();
