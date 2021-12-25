@@ -27,7 +27,7 @@ Online::~Online()
 
 void Online::init()
 {
-    nextPos = {"",-1,-1,0};
+    setNextPos("",-1,-1,0);
     myIpAddress = getIP();
     sendMessage(NewParticipant);
 //    processMsg();
@@ -225,12 +225,12 @@ ChessMsg Online::processMsg()
 
 void Online::processInvite(QString myIP,QString rivalIP)
 {
-    addOnlineUser(rivalIP);
+    addOnlineUser(myIP);
     if(rivalIP == myIpAddress)
     {
         qDebug() << "i am rival";
         qDebug() << myIpAddress;
-        setRivalIP(rivalIP);
+        setRivalIP(myIP);
         setUserState(myIP,false);
         setUserState(rivalIP,false);
     }
