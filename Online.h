@@ -16,6 +16,12 @@ struct ChessMsg{
     int c;
     int color;
 };
+struct NextPos{
+    QString ip;
+    int r;
+    int c;
+    int color;
+};
 
 class Online
 {
@@ -28,8 +34,7 @@ public:
     QUdpSocket * getSocket();
 
     bool getOnlineState();
-    void newParticipant(QString ipAddress);
-    void participantLeft(QString ipAddress);
+
     void sendMessage(MessageType type,ChessMsg CMsg={-1,"",-1,-1,0});
     ChessMsg processMsg();
 
@@ -37,14 +42,21 @@ public:
     QString getRivalIP();
     void setRivalIP(QString);
 
+    void setUserState(QString,bool);
+    bool getUserState(QString);
+
+
+
     void addOnlineUser(QString);
     void delOnlineUser(QString);
     std::vector<OnlineUser> * getOnlineUser();
 
+    NextPos getNextPos();
+    void setNextPos(QString,int,int,int);
+    void processInvite(QString,QString);
 
     QString getIP();
-    QString getUserName();
-    QString getMessage();
+
 
 private:
     QUdpSocket * udpSocket;
@@ -55,6 +67,7 @@ private:
     QString myHostName;
     QString myIpAddress;
     QString rivalIpAddress;
+    NextPos nextPos;
 
 };
 

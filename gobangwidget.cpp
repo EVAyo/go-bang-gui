@@ -140,6 +140,11 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
             cursor.setShape(Qt::CrossCursor);
             QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
             runGame();
+            if(game.getGameMode()==2)
+            {
+                online->sendMessage(Online::ChessPos,ChessMsg{1,online->getMyIP(),clickX,clickY,game.getCurUser()});
+            }
+//            online->sendMessage(Online::ChessPos,{0,online->getMyIP(),clickX,clickY,game.getCurUser()});
             nextStep();
             runGame();
         }
@@ -148,23 +153,11 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
 
 void GoBangWidget::nextStep()
 {
-    ChessMsg CM = online->processMsg();
-    switch (CM.msgType) {
-        case 0:
-            clickX = CM.r;
-            clickY = CM.c;
-            game.setCurUser(CM.color);
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case -1:
-            break;
-
-
+    if(online->getNextPos().ip == online->getRivalIP())
+    {
+        clickX = online->getNextPos().r;
+        clickY = online->getNextPos().c;
+        game.setCurUser(online->getNextPos().color);
     }
 }
 
@@ -229,10 +222,10 @@ void GoBangWidget::runGame()
         }else{
             game.checkOver();
             canRepent = true;
-            if(game.getGameMode()==2)
-            {
-                online->sendMessage(Online::ChessPos,ChessMsg{1,online->getMyIP(),clickX,clickY,game.getCurUser()});
-            }
+//            if(game.getGameMode()==2)
+//            {
+//                online->sendMessage(Online::ChessPos,ChessMsg{1,online->getMyIP(),clickX,clickY,game.getCurUser()});
+//            }
         }
 
     }else{
@@ -280,6 +273,7 @@ void GoBangWidget::selectGameMode()
         case 0:
             if(lastMode == 2)
             {
+                online->sendMessage(Online::ParticipantLeft);
                 onlineOff();
             }
             game.setGameMode(0);
@@ -288,6 +282,7 @@ void GoBangWidget::selectGameMode()
         case 1:
             if(lastMode == 2)
             {
+                online->sendMessage(Online::ParticipantLeft);
                 onlineOff();
             }
             game.setGameMode(1);
@@ -304,10 +299,12 @@ void GoBangWidget::selectGameMode()
 void GoBangWidget::onlineGame()
 {
 //    online.sendMessage(Online::NewParticipant);
+
     online = new Online();
-    online->init();
-    connect(ui->refreshBtn,SIGNAL(clicked()),this,SLOT(showOnlineUser()));
     connect(online->getSocket(), SIGNAL(readyRead()), this, SLOT(recieveMsg()));
+    connect(ui->refreshBtn,SIGNAL(clicked()),this,SLOT(showOnlineUser()));
+
+    online->init();
 
     showOnlineUser();
 }
@@ -347,8 +344,22 @@ void GoBangWidget::showOnlineUser()
     for (int i=0;i<int(allUsers->size());i++)
     {
         QTableWidgetItem * ip = new QTableWidgetItem(allUsers->at(i).ipAddress);
-        QPushButton *pBtn = new QPushButton(allUsers->at(i).isFree?"对战":"游戏中");
-        pBtn->setFixedSize(40,20);
+        QPushButton *pBtn = new QPushButton();
+        if(allUsers->at(i).isFree)
+        {
+            pBtn->setText("邀请");
+        }else
+        {
+            pBtn->setText("忙碌");
+            pBtn->setDisabled(true);
+        }
+        if(allUsers->at(i).ipAddress == online->getMyIP())
+        {
+            pBtn->setText("自己");
+            pBtn->setDisabled(true);
+        }
+//        pBtn->setFixedSize(40,20);
+        pBtn->setMaximumWidth(55);
         pBtn->setObjectName("userBtn"+QString(i));
         connect(pBtn,SIGNAL(clicked()),this,SLOT(onlinePK()));
 
@@ -367,5 +378,26 @@ void GoBangWidget::onlinePK()
     qDebug() << index;
 //    QString rivalIP = online->getOnlineUser()->at(index).ipAddress;
     online->setRivalIP(online->getOnlineUser()->at(index).ipAddress);
+    qDebug() << "before pk";
+    qDebug() << "rival" << online->getRivalIP();
+    for (int i = 0; i < int(online->getOnlineUser()->size()); i++)
+    {
 
+        qDebug()<< online->getOnlineUser()->at(i).ipAddress;
+        qDebug()<< online->getOnlineUser()->at(i).isFree;
+
+    }
+
+    online->sendMessage(Online::Invite);
+    online->setUserState(online->getMyIP(),false);
+    online->setUserState(online->getRivalIP(),false);
+    showOnlineUser();
+    qDebug() << "after pk";
+    for (int i = 0; i < int(online->getOnlineUser()->size()); i++)
+    {
+
+        qDebug()<< online->getOnlineUser()->at(i).ipAddress;
+        qDebug()<< online->getOnlineUser()->at(i).isFree;
+
+    }
 }
