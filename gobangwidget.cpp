@@ -50,9 +50,7 @@ GoBangWidget::GoBangWidget(QWidget *parent)
     connect(ui->gameStartBtn,SIGNAL(clicked()),this,SLOT(gameStart()));
     connect(ui->giveUpBtn,SIGNAL(clicked()),this,SLOT(giveUpGame()));
     connect(ui->repentGameBtn,SIGNAL(clicked()),this,SLOT(repentGame()));
-
     connect(ui->gameModeBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(selectGameMode()));
-
 }
 
 GoBangWidget::~GoBangWidget()
@@ -90,6 +88,7 @@ void GoBangWidget::paintEvent(QPaintEvent *)
     p.setPen(pen);
     p.drawPoint(10*zoom+linesGap*moveY,10*zoom+linesGap*moveX);
 
+    //draw chess
     for (int i=0; i<linesNum;i++) {
         for (int j=0; j<linesNum; j++) {
             int color = game.getGrid()[i][j];
@@ -104,7 +103,7 @@ void GoBangWidget::paintEvent(QPaintEvent *)
             delete chess;
         }
     }
-
+    //draw a line for win points
     if(game.getWinPos()[2] != -1)
     {
         int r = game.getWinPos()[0];
@@ -153,9 +152,6 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
             {
                 online->sendMessage(Online::ChessPos,ChessMsg{1,online->getMyIP(),clickX,clickY,game.getCurUser()});
             }
-//            online->sendMessage(Online::ChessPos,{0,online->getMyIP(),clickX,clickY,game.getCurUser()});
-//            nextStep();
-//            runGame();
         }
     }
 }
@@ -242,10 +238,6 @@ void GoBangWidget::runGame()
         }else{
             game.checkOver();
             canRepent = true;
-//            if(game.getGameMode()==2)
-//            {
-//                online->sendMessage(Online::ChessPos,ChessMsg{1,online->getMyIP(),clickX,clickY,game.getCurUser()});
-//            }
         }
 
     }else{
@@ -318,8 +310,6 @@ void GoBangWidget::selectGameMode()
 //start online game
 void GoBangWidget::onlineGame()
 {
-//    online.sendMessage(Online::NewParticipant);
-
     online = new Online();
     connect(online->getSocket(), SIGNAL(readyRead()), this, SLOT(recieveMsg()));
     connect(ui->refreshBtn,SIGNAL(clicked()),this,SLOT(showOnlineUser()));
@@ -365,6 +355,7 @@ void GoBangWidget::showOnlineUser()
     }
     ui->onlineUserWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->onlineUserWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    qDebug()<<ui->onlineUserWidget->geometry();
     std::vector<OnlineUser> * allUsers = online->getOnlineUser();
     for (int i=0;i<int(allUsers->size());i++)
     {
@@ -383,14 +374,20 @@ void GoBangWidget::showOnlineUser()
             pBtn->setText("自己");
             pBtn->setDisabled(true);
         }
-//        pBtn->setFixedSize(40,20);
-        pBtn->setMaximumWidth(55);
+        pBtn->setMaximumWidth(40*zoom);
         pBtn->setObjectName("userBtn_"+QString::number(i));
         connect(pBtn,SIGNAL(clicked()),this,SLOT(onlinePK()));
 
         ui->onlineUserWidget->insertRow(i);
         ui->onlineUserWidget->setItem(i,0,ip);
-        ui->onlineUserWidget->setCellWidget(i,1,pBtn);
+        QWidget *widget = new QWidget();
+        QHBoxLayout *layout = new QHBoxLayout();
+        layout->setMargin(0);
+        layout->addWidget(pBtn);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(0);
+        widget->setLayout(layout);
+        ui->onlineUserWidget->setCellWidget(i,1,widget);
     }
     update();
 }

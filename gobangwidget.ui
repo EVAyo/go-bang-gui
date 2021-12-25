@@ -273,6 +273,12 @@
     </item>
     <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
      <widget class="QTableWidget" name="onlineUserWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
@@ -298,7 +304,7 @@
        <bool>true</bool>
       </property>
       <property name="gridStyle">
-       <enum>Qt::DashLine</enum>
+       <enum>Qt::SolidLine</enum>
       </property>
       <property name="sortingEnabled">
        <bool>true</bool>
@@ -309,11 +315,20 @@
       <attribute name="horizontalHeaderVisible">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>80</number>
+      <attribute name="horizontalHeaderCascadingSectionResizes">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+       <bool>true</bool>
       </attribute>
       <attribute name="horizontalHeaderStretchLastSection">
        <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>true</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
        <number>25</number>
