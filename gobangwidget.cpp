@@ -76,7 +76,7 @@ void GoBangWidget::paintEvent(QPaintEvent *)
         p.drawLine(linesGap*n+10*zoom,10*zoom,linesGap*n+10*zoom,10*zoom+linesGap*(linesNum-1));//Vertical
     }
     //draw points
-    pen.setWidth(5);
+    pen.setWidth(5*zoom);
     p.setPen(pen);
     p.drawPoint(10*zoom+linesGap*3,10*zoom+linesGap*3);
     p.drawPoint(10*zoom+linesGap*11,10*zoom+linesGap*3);
@@ -86,7 +86,7 @@ void GoBangWidget::paintEvent(QPaintEvent *)
 
     //draw following points
     pen.setColor(Qt::red);
-    pen.setWidth(5);
+    pen.setWidth(5*zoom);
     p.setPen(pen);
     p.drawPoint(10*zoom+linesGap*moveY,10*zoom+linesGap*moveX);
 
