@@ -225,12 +225,12 @@ ChessMsg Online::processMsg()
 
 void Online::processInvite(QString myIP,QString rivalIP)
 {
-    addOnlineUser(rivalIP);
+    addOnlineUser(myIP);
     if(rivalIP == myIpAddress)
     {
         qDebug() << "i am rival";
         qDebug() << myIpAddress;
-        setRivalIP(rivalIP);
+        setRivalIP(myIP);
         setUserState(myIP,false);
         setUserState(rivalIP,false);
     }

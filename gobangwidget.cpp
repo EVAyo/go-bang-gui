@@ -145,19 +145,27 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
                 online->sendMessage(Online::ChessPos,ChessMsg{1,online->getMyIP(),clickX,clickY,game.getCurUser()});
             }
 //            online->sendMessage(Online::ChessPos,{0,online->getMyIP(),clickX,clickY,game.getCurUser()});
-            nextStep();
-            runGame();
+//            nextStep();
+//            runGame();
         }
     }
 }
 
 void GoBangWidget::nextStep()
 {
+    qDebug() << "next step";
+    qDebug() << online->getRivalIP();
+    qDebug() << online->getNextPos().ip;
     if(online->getNextPos().ip == online->getRivalIP())
     {
-        clickX = online->getNextPos().r;
-        clickY = online->getNextPos().c;
+        qDebug() << "yu wo yy";
+        clickX = online->getNextPos().c;
+        clickY = online->getNextPos().r;
         game.setCurUser(online->getNextPos().color);
+    }
+    else
+    {
+        qDebug() << "yu wo bu yy";
     }
 }
 
@@ -327,6 +335,12 @@ void GoBangWidget::onlineOff()
 void GoBangWidget::recieveMsg()
 {
     online->processMsg();
+    if(online->getRivalIP() != "")
+    {
+        nextStep();
+        runGame();
+    }
+
     showOnlineUser();
     update();
 }
