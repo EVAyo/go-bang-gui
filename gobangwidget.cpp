@@ -360,7 +360,7 @@ void GoBangWidget::showOnlineUser()
         }
 //        pBtn->setFixedSize(40,20);
         pBtn->setMaximumWidth(55);
-        pBtn->setObjectName("userBtn"+QString(i));
+        pBtn->setObjectName("userBtn_"+QString::number(i));
         connect(pBtn,SIGNAL(clicked()),this,SLOT(onlinePK()));
 
         ui->onlineUserWidget->insertRow(i);
@@ -374,8 +374,10 @@ void GoBangWidget::showOnlineUser()
 void GoBangWidget::onlinePK()
 {
     QString btnName = QObject::sender()->objectName();
-    int index = (btnName.midRef(7,-1)).toInt();
+    int index = (btnName.split("_")[1]).toInt();
+    qDebug() << this->sender();
     qDebug() << index;
+
 //    QString rivalIP = online->getOnlineUser()->at(index).ipAddress;
     online->setRivalIP(online->getOnlineUser()->at(index).ipAddress);
     qDebug() << "before pk";
