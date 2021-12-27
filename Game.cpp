@@ -178,7 +178,11 @@ bool Game::putChess(int i, int j)
     }
     return true;
 }
-
+//can place the piece
+bool Game::checkPoint(int i, int j)
+{
+    return grid[i][j] == 0;
+}
 
 //check whether the game is over
 void Game::checkOver()

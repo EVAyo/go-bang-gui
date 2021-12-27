@@ -16,7 +16,7 @@ public:
     int * getWinPos();
 
     bool putChess(int,int);			//place the piece
-
+    bool checkPoint(int,int);       //check can place chess on the point
     int ** getLastGrid();           //get last grid data
     void setLastGrid(int **);       //set last grid data
 

@@ -148,6 +148,12 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
         qDebug()<<"CurUser:"<<game.getCurUser();
         if(canPlay && clickX>=0&&clickX<linesNum&&clickY>=0&&clickY<linesNum){
 //            qDebug() << "game mode" << game.getGameMode();
+            if(!game.checkPoint(clickX,clickY))
+            {
+                setGameMsg(QString::fromStdString("这里不可以落棋!"));
+                update();
+                return;
+            }
             if(game.getGameMode()==2)
             {
                 runOnlineGame();
@@ -159,7 +165,7 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
         }
         else
         {
-            setGameMsg(QString::fromStdString("不可以下棋!"));
+            setGameMsg(QString::fromStdString("未到我方下棋!"));
         }
     }
     update();
@@ -341,6 +347,7 @@ void GoBangWidget::runGame()
     update();
 }
 
+
 //run online game
 void GoBangWidget::runOnlineGame()
 {
@@ -368,6 +375,10 @@ void GoBangWidget::runOnlineGame()
     setGameMsg(QString::fromStdString(game.getGameMsg()));
     update();
 }
+
+
+
+
 
 //repent the game
 void GoBangWidget::repentGame()
