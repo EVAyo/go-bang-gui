@@ -6,7 +6,7 @@ class Game
 {
 public:
     Game();
-    void initGrid();				//initialize the board
+    void initGrid(int);				//initialize the board
     void printGrid();				//show current grid state
 
     int ** getGrid();               //get grid data

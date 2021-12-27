@@ -12,6 +12,7 @@
   </property>
   <property name="font">
    <font>
+    <family>黑体</family>
     <pointsize>9</pointsize>
    </font>
   </property>
@@ -35,7 +36,96 @@
    </property>
    <layout class="QVBoxLayout" name="_2">
     <item>
-     <spacer name="verticalSpacer_5">
+     <layout class="QHBoxLayout" name="horizontalLayout_8">
+      <item>
+       <widget class="QLabel" name="UserIco1">
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="chessimages.qrc">:/chess/imgs/black.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="UserName1">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <item>
+       <widget class="QLabel" name="UserIco2">
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="chessimages.qrc">:/chess/imgs/white.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="UserName2">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_4">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -53,7 +143,10 @@
        <widget class="QLabel" name="label">
         <property name="font">
          <font>
+          <family>微软雅黑</family>
           <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -65,26 +158,30 @@
        <widget class="QComboBox" name="firstWhoBox">
         <property name="font">
          <font>
+          <family>宋体</family>
           <pointsize>10</pointsize>
          </font>
         </property>
         <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
+         <cursorShape>ArrowCursor</cursorShape>
         </property>
         <property name="currentText">
-         <string>黑棋先行!</string>
+         <string>黑棋先行</string>
         </property>
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
         <item>
          <property name="text">
-          <string>黑棋先行!</string>
+          <string>黑棋先行</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>白棋先行!</string>
+          <string>白棋先行</string>
          </property>
         </item>
        </widget>
@@ -105,25 +202,15 @@
      </layout>
     </item>
     <item>
-     <spacer name="verticalSpacer_4">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QLabel" name="label_4">
         <property name="font">
          <font>
+          <family>微软雅黑</family>
           <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -135,6 +222,7 @@
        <widget class="QComboBox" name="gameModeBox">
         <property name="font">
          <font>
+          <family>宋体</family>
           <pointsize>10</pointsize>
          </font>
         </property>
@@ -143,6 +231,9 @@
         </property>
         <property name="currentIndex">
          <number>0</number>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
         </property>
         <item>
          <property name="text">
@@ -201,7 +292,10 @@
         </property>
         <property name="font">
          <font>
+          <family>微软雅黑</family>
           <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -228,6 +322,7 @@
         </property>
         <property name="font">
          <font>
+          <family>宋体</family>
           <pointsize>10</pointsize>
          </font>
         </property>
@@ -258,6 +353,7 @@
         </property>
         <property name="font">
          <font>
+          <family>宋体</family>
           <pointsize>10</pointsize>
          </font>
         </property>
@@ -316,7 +412,7 @@
        <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderCascadingSectionResizes">
-       <bool>true</bool>
+       <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderHighlightSections">
        <bool>true</bool>
@@ -352,9 +448,13 @@
     </item>
     <item>
      <widget class="QLabel" name="label_tip">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="font">
        <font>
-        <pointsize>12</pointsize>
+        <family>微软雅黑</family>
+        <pointsize>11</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -419,6 +519,7 @@
         </property>
         <property name="font">
          <font>
+          <family>宋体</family>
           <pointsize>10</pointsize>
          </font>
         </property>
@@ -443,8 +544,8 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>0</width>
+          <height>10</height>
          </size>
         </property>
        </spacer>
@@ -462,6 +563,7 @@
         </property>
         <property name="font">
          <font>
+          <family>宋体</family>
           <pointsize>10</pointsize>
          </font>
         </property>
@@ -486,7 +588,10 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>11</pointsize>
+          <family>微软雅黑</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="cursor">
@@ -507,6 +612,7 @@
         </property>
         <property name="font">
          <font>
+          <family>宋体</family>
           <pointsize>10</pointsize>
          </font>
         </property>
@@ -549,6 +655,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="chessimages.qrc"/>
+ </resources>
  <connections/>
 </ui>

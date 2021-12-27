@@ -43,26 +43,38 @@ private:
     bool canRepent;
 
     void setGameMsg(QString);
+    void setUserName(QString,QString);
+    int getMyColor();
     void paintEvent(QPaintEvent *);
     void runGame();
+    void runOnlineGame();
 
     void onlineGame();
+    void onlineGameStart(bool,int);
     void onlineOff();
     void nextStep();
+
+    void winGame();
+    void lostGame();
 
 public slots:
     void gameStart();
     void giveUpGame();
     void repentGame();
     void selectGameMode();
-    void onlinePK();
+
+    void invitePK();
+    void inviteProcess(QString,QString,int);
+
     void showOnlineUser();
     void recieveMsg();
+    void refreshBtnClick();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 //    void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void closeEvent(QCloseEvent *event);
 };
 #endif // GOBANGWIDGET_H

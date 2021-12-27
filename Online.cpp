@@ -1,6 +1,5 @@
 #include "Online.h"
 #include <QUdpSocket>
-#include <QHostInfo>
 #include <QMessageBox>
 #include <QNetworkInterface>
 #include <QDebug>
@@ -11,9 +10,6 @@ Online::Online()
     udpSocket = new QUdpSocket();
     port = 8888;
     udpSocket->bind(port,QUdpSocket::ShareAddress|QUdpSocket::ReuseAddressHint);
-//    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
-
-    //    sendMessage(NewParticipant);
     onlineUsers = new std::vector<OnlineUser>[MaxUserNums];
 }
 
@@ -30,8 +26,6 @@ void Online::init()
     setNextPos("",-1,-1,0);
     myIpAddress = getIP();
     sendMessage(NewParticipant);
-//    processMsg();
-//    addOnlineUser(myHostName,myIpAddress);
 }
 
 QUdpSocket * Online::getSocket()
@@ -128,7 +122,14 @@ void Online::delOnlineUser(QString ipAddress)
         }
     }
 }
-
+//clean Online User
+void Online::cleanOnlineUser()
+{
+    if(!onlineUsers->empty())
+    {
+    onlineUsers->clear();
+    }
+}
 
 // send  UDP msg
 void Online::sendMessage(MessageType type,ChessMsg CMsg)
@@ -136,24 +137,33 @@ void Online::sendMessage(MessageType type,ChessMsg CMsg)
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
     out << type;
+    qDebug() << type;
     switch(type)
     {
     case ChessPos :
         qDebug() << "out ChessPos:";
-        out << myIpAddress;
+        out << CMsg.ip1;
         out << CMsg.c << CMsg.r << CMsg.color;
         break;
     case NewParticipant :
         qDebug() << "out NewParticipant:";
-        out << myIpAddress;
+        out << getMyIP();
         break;
     case ParticipantLeft :
         qDebug() << "out ParticipantLeft:";
-        out << myIpAddress;
+        out << getMyIP();
+        break;
+    case Refresh:
+        qDebug() << "out Refresh:";
+        out << getMyIP();
         break;
     case Invite :
         qDebug() << "out Invite:";
-        out << myIpAddress << rivalIpAddress;
+        out << getMyIP() << getRivalIP();
+        out << CMsg.color;
+        break;
+    case Accept:
+
         break;
     case Refuse :
         break;
@@ -172,7 +182,6 @@ ChessMsg Online::processMsg()
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size());
         QDataStream in(&datagram, QIODevice::ReadOnly);
-//        qDebug() << "type in";
         int messageType;
         in >> messageType;
         QString ipAddress;
@@ -187,63 +196,46 @@ ChessMsg Online::processMsg()
             qDebug() << ipAddress;
             qDebug() << i<<j<<color;
             setNextPos(ipAddress,i,j,color);
-            return {0,ipAddress,i,j,color};
+            return {0,ipAddress,"",i,j,color};
             break;
 
         case NewParticipant:
             in >>ipAddress;
             qDebug() << "in NewParticipant:";
-//            newParticipant(userName,ipAddress);
             addOnlineUser(ipAddress);
-            qDebug() << ipAddress;
-            return {1,ipAddress,-1,-1,0};
+            sendMessage(Refresh);
             break;
 
         case ParticipantLeft:
             in >> ipAddress;
             qDebug() << "in ParticipantLeft:";
-//            participantLeft(userName,localHostName);
             delOnlineUser(ipAddress);
-            qDebug() << ipAddress;
-            return {2,ipAddress,-1,-1,0};
             break;
-
+        case Refresh:
+            in >> ipAddress;
+            addOnlineUser(ipAddress);
+            break;
         case Invite:
             in >> myIP >> rivalIP;
             qDebug() << "in Invite:";
-            processInvite(myIP,rivalIP);
+            return {4,myIP,rivalIP,-1,-1,0};
+            break;
+        case Accept:
+            return {5,ipAddress,"",-1,-1,0};
             break;
 
         case Refuse:
             in >> ipAddress;
             qDebug() << ipAddress;
+            return {6,ipAddress,"",-1,-1,0};
             break;
         }
     }
-    return {-1,"",-1,-1,0};
-}
-
-void Online::processInvite(QString myIP,QString rivalIP)
-{
-    addOnlineUser(myIP);
-    if(rivalIP == myIpAddress)
-    {
-        qDebug() << "i am rival";
-        qDebug() << myIpAddress;
-        setRivalIP(myIP);
-        setUserState(myIP,false);
-        setUserState(rivalIP,false);
-    }
-    else
-    {
-        qDebug() << "i am mine";
-        qDebug() << myIpAddress;
-    }
+    return {-1,"","",-1,-1,0};
 }
 
 
-
-// 获取ip地址
+// get ip
 QString Online::getIP()
 {
     QList<QHostAddress> list = QNetworkInterface::allAddresses();

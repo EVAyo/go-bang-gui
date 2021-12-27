@@ -3,5 +3,8 @@
         <file>imgs/black.png</file>
         <file>imgs/logo.png</file>
         <file>imgs/white.png</file>
+        <file>imgs/cry.png</file>
+        <file>imgs/happy.png</file>
+        <file>imgs/sad.png</file>
     </qresource>
 </RCC>

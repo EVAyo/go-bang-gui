@@ -11,12 +11,12 @@ Game::Game() {
         grid[i] = new int[size];
         lastGrid[i] = new int[size];
     }
-    initGrid();
+    initGrid(0);
     setWhoFirst(1);                 //black first
 }
 
 //initialize the board
-void Game::initGrid()
+void Game::initGrid(int GameMode)
 {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++)
@@ -25,7 +25,7 @@ void Game::initGrid()
             lastGrid[i][j] = 0;
         }
     }
-    gameMode = 0;                   //PVP
+    gameMode = GameMode;                   //PVP
     setWinPos(-1,-1,-1);            //r,c,dirc
     setIsOver(false);
     setCurUser(getWhoFirst());      //current black
