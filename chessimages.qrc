@@ -6,5 +6,9 @@
         <file>imgs/cry.png</file>
         <file>imgs/happy.png</file>
         <file>imgs/sad.png</file>
+        <file>imgs/wait.gif</file>
+        <file>imgs/down.png</file>
+        <file>imgs/forbid.png</file>
+        <file>imgs/over.png</file>
     </qresource>
 </RCC>

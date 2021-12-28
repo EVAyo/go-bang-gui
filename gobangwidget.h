@@ -20,6 +20,7 @@ class GoBangWidget : public QWidget
 public:
     GoBangWidget(QWidget *parent = nullptr);
     ~GoBangWidget();
+    enum GameState{WaitChess,DownChess,ForbidGame,OverGame};
 
 private:
     Ui::GoBangWidget *ui;
@@ -28,6 +29,10 @@ private:
     double linesGap;
     QString blackChess;
     QString whiteChess;
+    QString WaitChessImg;
+    QString DownChessImg;
+    QString ForbidGameImg;
+    QString OverGameImg;
 
     QFrame *boardFrame;
     QPoint offset;
@@ -42,7 +47,7 @@ private:
     bool canPlay;
     bool canRepent;
 
-    void setGameMsg(QString);
+    void setGameMsg(QString,GameState);
     void setUserName(QString,QString);
     int getMyColor();
     void paintEvent(QPaintEvent *);
