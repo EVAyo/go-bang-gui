@@ -332,9 +332,6 @@ void GoBangWidget::setGameMsg(QString msg,GameState type)
     {
         QImage *img = new QImage();
         switch (type) {
-        case WaitChess:
-                img->load(WaitChessImg);
-            break;
         case DownChess:
                 img->load(DownChessImg);
             break;
@@ -351,30 +348,6 @@ void GoBangWidget::setGameMsg(QString msg,GameState type)
     }
     ui->label_tip->setText(msg);
 }
-
-//void GoBangWidget::setGameMsg(QString msg,GameState type)
-//{
-//    QImage *img = new QImage();
-//    switch (type) {
-//    case WaitChess:
-//            img->load(DownChessImg);
-//        break;
-//    case DownChess:
-//            img->load(DownChessImg);
-//        break;
-//    case ForbidGame:
-//            img->load(ForbidGameImg);
-//        break;
-//    case OverGame:
-//            img->load(OverGameImg);
-//        break;
-//    default:
-//        break;
-//    }
-//    ui->waitContainer->setPixmap(QPixmap::fromImage(*img));
-//    ui->label_tip->setText(msg);
-//}
-
 
 //set user name label content
 void GoBangWidget::setUserName(QString blackName,QString whiteName)
