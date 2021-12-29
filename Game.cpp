@@ -50,6 +50,10 @@ void Game::setWinPos(int r,int c,int dirc)
     winPos[0] = r;
     winPos[1] = c;
     winPos[2] = dirc;
+    if(dirc != -1)
+    {
+        winPos[3] = grid[r][c];
+    }
 }
 //get Win Pos
 int * Game::getWinPos()

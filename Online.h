@@ -29,7 +29,7 @@ class Online
 public:
     Online();
     ~Online();
-    enum MessageType{ChessPos,NewParticipant,ParticipantLeft,Refresh,Invite,Accept,Refuse};
+    enum MessageType{ChessPos,NewParticipant,ParticipantLeft,Refresh,Invite,Accept,Refuse,Surrender,Repentance,Exception};
     void init();
     QUdpSocket * getSocket();
 

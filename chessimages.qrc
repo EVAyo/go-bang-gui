@@ -10,5 +10,7 @@
         <file>imgs/down.png</file>
         <file>imgs/forbid.png</file>
         <file>imgs/over.png</file>
+        <file>imgs/about.png</file>
+        <file>imgs/warn.png</file>
     </qresource>
 </RCC>

@@ -20,7 +20,7 @@ class GoBangWidget : public QWidget
 public:
     GoBangWidget(QWidget *parent = nullptr);
     ~GoBangWidget();
-    enum GameState{WaitChess,DownChess,ForbidGame,OverGame};
+    enum GameState{WaitChess,DownChess,ForbidGame,OverGame,WarnGame};
 
 private:
     Ui::GoBangWidget *ui;
@@ -33,6 +33,7 @@ private:
     QString DownChessImg;
     QString ForbidGameImg;
     QString OverGameImg;
+    QString WarningImg;
 
     QFrame *boardFrame;
     QPoint offset;
@@ -44,6 +45,7 @@ private:
     int moveX;
     int moveY;
 
+    bool isStart;
     bool canPlay;
     bool canRepent;
 
@@ -54,11 +56,17 @@ private:
     void runGame();
     void runOnlineGame();
 
-    void onlineGame();
+    void onlineGameInit();
     void onlineGameStart(bool,int);
     void onlineOff();
     void nextStep();
 
+    void inviteProcess(QString,QString,int);
+    void surrenderProcess(QString);
+    void repentProcess(QString);
+    void exceptionProcess(QString);
+
+    void showGameOver();
     void winGame();
     void lostGame();
 
@@ -67,13 +75,13 @@ public slots:
     void giveUpGame();
     void repentGame();
     void selectGameMode();
-
     void invitePK();
-    void inviteProcess(QString,QString,int);
+    void exceptionalGame();
 
     void showOnlineUser();
     void recieveMsg();
     void refreshBtnClick();
+    void aboutGame();
 
 protected:
     void mousePressEvent(QMouseEvent *event);

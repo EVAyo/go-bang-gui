@@ -163,9 +163,20 @@ void Online::sendMessage(MessageType type,ChessMsg CMsg)
         out << CMsg.color;
         break;
     case Accept:
-
         break;
     case Refuse :
+        break;
+    case Surrender:
+        qDebug() << "out Surrender:";
+        out << getMyIP();
+        break;
+    case Repentance :
+        qDebug() << "out Repentance :";
+        out << getMyIP();
+        break;
+    case Exception :
+        qDebug() << "out Exception :";
+        out << getMyIP();
         break;
     }
     udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
@@ -223,11 +234,25 @@ ChessMsg Online::processMsg()
         case Accept:
             return {5,ipAddress,"",-1,-1,0};
             break;
-
         case Refuse:
             in >> ipAddress;
             qDebug() << ipAddress;
             return {6,ipAddress,"",-1,-1,0};
+            break;
+        case Surrender:
+            in >> ipAddress;
+            qDebug() << ipAddress;
+            return {7,ipAddress,"",-1,-1,0};
+            break;
+        case Repentance :
+            in >> ipAddress;
+            qDebug() << ipAddress;
+            return {8,ipAddress,"",-1,-1,0};
+            break;
+        case Exception :
+            in >> ipAddress;
+            qDebug() << ipAddress;
+            return {9,ipAddress,"",-1,-1,0};
             break;
         }
     }

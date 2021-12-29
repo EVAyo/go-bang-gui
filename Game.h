@@ -41,7 +41,7 @@ private:
     int size;           //grid size
     int **grid;         //grid array
     int **lastGrid;     //x,y,current user
-    int winPos[3];      //the location of the first point
+    int winPos[4];      //the location of the first point
     bool isOver;        //game over?
     int gameMode;       //0:PVP 1:PVE 3:online
     int curUser;        //current user 1:black -1:white
