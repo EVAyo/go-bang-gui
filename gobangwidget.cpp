@@ -98,6 +98,7 @@ void GoBangWidget::setRivalName(QString rivalName)
 {
     ui->UserName2->setText(rivalName);
     if(online->getIsMaster())
+//    if(game.getWhoFirst()==1)
     {
         ui->UserIco1->setPixmap(QPixmap(blackChess));
         ui->UserIco2->setPixmap(QPixmap(whiteChess));
@@ -302,6 +303,10 @@ void GoBangWidget::gameStart()
         onlineGameInit();
         onlineGameStart(game.getWhoFirst());
     }
+    ui->repentGameBtn->setEnabled(true);
+    ui->giveUpBtn->setEnabled(true);
+    ui->gameStartBtn->setText("重开");
+    ui->firstWhoBox->setDisabled(false);
     update();
 }
 //start the online game
@@ -310,30 +315,24 @@ void GoBangWidget::onlineGameStart(int masterColor)
     game.initGrid(2);
     if(isStart)
     {
-        if(online->getIsMaster())    //master
+        if(masterColor == getMyColor())     //first
         {
-            masterColor==1?setGameMsg(QString::fromStdString("请您行棋!"),WaitChess):
-                           setGameMsg(QString::fromStdString("等对方行棋!"),WaitChess);
-            game.setWhoFirst(masterColor);
+            setGameMsg(QString::fromStdString("请您行棋!"),WaitChess);
             canPlay = true;
         }
-        else                        //guest
+        else                                //second
         {
-            masterColor==-1?setGameMsg(QString::fromStdString("请您行棋!"),WaitChess):
-                            setGameMsg(QString::fromStdString("等对方行棋!"),WaitChess);
-            game.setWhoFirst(masterColor*-1);
+            setGameMsg(QString::fromStdString("等对方行棋!"),WaitChess);
             canPlay = false;
         }
-        setRivalName(online->getRivalIP());
+        game.setCurUser(masterColor);
         canRepent = false;
-        ui->repentGameBtn->setEnabled(true);
-        ui->giveUpBtn->setEnabled(true);
-        ui->gameStartBtn->setText("重开");
     }
     else
     {
         setGameMsg(QString::fromStdString("等待游戏开始!"),WaitChess);
     }
+    online->getRivalIP()!=""?setRivalName(online->getRivalIP()):setRivalName("还没有人");
     update();
 }
 
@@ -507,7 +506,7 @@ void GoBangWidget::showGameOver()
     }
     if(game.getGameMode() == 2)
     {
-        QString res = "你";
+        QString msg = "恭喜你赢了!游戏结束!";
         if(game.getWinPos()[3] == getMyColor())
         {
             winGame();
@@ -515,9 +514,8 @@ void GoBangWidget::showGameOver()
         else
         {
             lostGame();
-            res = "对手";
+            msg = "遗憾你输了!游戏结束!";
         }
-        QString msg = "恭喜" + res + "赢了!游戏结束!";
         setGameMsg(msg,OverGame);
         online->setUserState(online->getRivalIP(),true);
         showOnlineUser();
@@ -754,7 +752,9 @@ void GoBangWidget::invitePK()
                         online->getRivalIP(),-1,-1,game.getWhoFirst()});
     online->setUserState(online->getMyIP(),false);
     online->setUserState(online->getRivalIP(),false);
-    isStart = true;
+    game.getWhoFirst() == 1?isStart = true:isStart = false;
+    ui->firstWhoBox->setDisabled(true);
+    ui->gameStartBtn->setText("重开");
     onlineGameStart(game.getWhoFirst());
 }
 //Process a pk
@@ -772,7 +772,11 @@ void GoBangWidget::inviteProcess(QString ip1,QString ip2,int color)
             online->setUserState(online->getRivalIP(),false);
             online->setIsMaster(false);
             showOnlineUser();
-            isStart = true;
+            color == -1?isStart = true:isStart = false;
+            ui->firstWhoBox->setCurrentIndex(isStart?1:0);
+            ui->firstWhoBox->setDisabled(true);
+            ui->gameStartBtn->setText("重开");
+            game.setWhoFirst(color);
             onlineGameStart(color);
         }
     }

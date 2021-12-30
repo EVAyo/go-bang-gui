@@ -242,9 +242,9 @@ ChessMsg Online::processMsg()
             addOnlineUser(ipAddress);
             break;
         case Invite:
-            in >> myIP >> rivalIP;
+            in >> myIP >> rivalIP >> color;
             qDebug() << "in Invite:";
-            return {4,myIP,rivalIP,-1,-1,0};
+            return {4,myIP,rivalIP,-1,-1,color};
             break;
         case Accept:
             return {5,ipAddress,"",-1,-1,0};
