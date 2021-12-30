@@ -148,7 +148,6 @@ void Online::sendMessage(MessageType type,ChessMsg CMsg)
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
     out << type;
-    qDebug() << type;
     switch(type)
     {
     case ChessPos :
@@ -206,7 +205,6 @@ ChessMsg Online::processMsg()
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size());
         QDataStream in(&datagram, QIODevice::ReadOnly);
-        qDebug() << "pendingDatagramSize" << int(udpSocket->pendingDatagramSize());
         qDebug() << "recieve data size:" << datagram.size();
         int messageType;
         in >> messageType;
