@@ -23,9 +23,6 @@ public:
     void setCurUser(int);
     int getCurUser();
 
-    void setGameMsg(std::string);
-    std::string getGameMsg();
-
     void setIsOver(bool);
     bool getIsOver();
 
@@ -47,8 +44,6 @@ private:
     int curUser;        //current user 1:black -1:white
     int firstPlay;      //who first 1:black -1:white
     const int winFlag = 5;	//condition for winning the game
-    std::string gameMsg;
 };
-
 
 #endif // !GAME

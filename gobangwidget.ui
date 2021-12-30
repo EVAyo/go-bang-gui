@@ -41,6 +41,24 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_8">
       <item>
+       <widget class="QLabel" name="UserName1">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>我方</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="UserIco1">
         <property name="maximumSize">
          <size>
@@ -57,23 +75,8 @@
         <property name="scaledContents">
          <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="UserName1">
-        <property name="font">
-         <font>
-          <family>微软雅黑</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="buddy">
+         <cstring></cstring>
         </property>
        </widget>
       </item>
@@ -89,7 +92,28 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_9">
       <item>
+       <widget class="QLabel" name="UserName2">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>对手</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="UserIco2">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="maximumSize">
          <size>
           <width>30</width>
@@ -99,29 +123,20 @@
         <property name="text">
          <string/>
         </property>
+        <property name="textFormat">
+         <enum>Qt::AutoText</enum>
+        </property>
         <property name="pixmap">
          <pixmap resource="chessimages.qrc">:/chess/imgs/white.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="UserName2">
-        <property name="font">
-         <font>
-          <family>微软雅黑</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
+        <property name="openExternalLinks">
+         <bool>false</bool>
         </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="buddy">
+         <cstring></cstring>
         </property>
        </widget>
       </item>

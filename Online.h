@@ -55,6 +55,9 @@ public:
 
     QString getIP();
 
+    void setIsMaster(bool);
+    bool getIsMaster();
+
 private:
     QUdpSocket * udpSocket;
     qint16 port;
@@ -64,7 +67,7 @@ private:
     QString myIpAddress;
     QString rivalIpAddress;
     NextPos nextPos;
-
+    bool isMaster;
 };
 
 #endif // ONLINE_H

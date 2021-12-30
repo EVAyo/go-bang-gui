@@ -29,8 +29,6 @@ void Game::initGrid(int GameMode)
     setWinPos(-1,-1,-1);            //r,c,dirc
     setIsOver(false);
     setCurUser(getWhoFirst());      //current black
-    string who = getWhoFirst()== 1 ? "黑棋" : "白棋";
-    setGameMsg("点击开始游戏，" + who + "先行！");
 }
 
 //set Who First play
@@ -106,17 +104,6 @@ void Game::setCurUser(int user)
     curUser = user;
 }
 
-//set game message
-void Game::setGameMsg(std::string msg)
-{
-    gameMsg = msg;
-}
-//get game message
-std::string Game::getGameMsg()
-{
-    return gameMsg;
-}
-
 //set game isOver
 void Game::setIsOver(bool res)
 {
@@ -160,7 +147,6 @@ void Game::printGrid()
                 //cout << ' ' << grid[i][j] << ' ';
                 cout << " o ";
             }
-
         }
         cout << '\n';
     }
@@ -170,19 +156,15 @@ void Game::printGrid()
 //place the piece
 bool Game::putChess(int i, int j)
 {
-    if (!isOver && grid[i][j] == 0)	{
-//        **lastGrid = **grid;
+    if(!getIsOver()&&checkPoint(i,j))
+    {
         setLastGrid(grid);
         grid[i][j] = getCurUser();
-//        setCurUser(getCurUser()*-1);   //change the current user after putting the piece
-    }else {
-        cout << "can not place piece here !\n";
-        setGameMsg("这里不能落棋!");
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
-//can place the piece
+//can place the piece?
 bool Game::checkPoint(int i, int j)
 {
     return grid[i][j] == 0;
@@ -204,8 +186,6 @@ void Game::checkOver()
             if (ckResult[0] == 1)
             {
                 setWinPos(i,j,ckResult[1]);
-                string res = (getCurUser() == 1 ? "黑棋" : "白棋");
-                setGameMsg("游戏结束!" + res + "胜利!");
                 setIsOver(true);
                 break;
             }
@@ -228,15 +208,14 @@ dirc:
 */
 int * Game::checkLine(int r, int c)
 {
-//    int result[2] = { 0,0 };	//results,dirc
-    int *result = new int[2]{};
+    int *result = new int[2]{};//results,dirc
     for (int d = 1; d <= 4; d++)
     {
         int num = 0;
         switch (d)
         {
         case 1:	/*right*/
-            if (c + winFlag >= size)
+            if (c + winFlag > size)
             {
                 break;				//Insufficient number of squares on the right
             }
@@ -251,7 +230,7 @@ int * Game::checkLine(int r, int c)
             }
             break;
         case 2:	/*right-down*/
-            if (c + winFlag >= size || r + winFlag >= size)
+            if (c + winFlag > size || r + winFlag > size)
             {
                 break;				//Insufficient number of squares on the right-down
             }
@@ -266,7 +245,7 @@ int * Game::checkLine(int r, int c)
             }
             break;
         case 3:	/*down*/
-            if (r + winFlag >= size)
+            if (r + winFlag > size)
             {
                 break;				//Insufficient number of squares on the down
             }
@@ -281,7 +260,7 @@ int * Game::checkLine(int r, int c)
             }
             break;
         case 4:	/*left-down*/
-            if (c < winFlag - 1 || r + winFlag >= size)
+            if (c < winFlag - 1 || r + winFlag > size)
             {
                 break;				//Insufficient number of squares on the left-down
             }

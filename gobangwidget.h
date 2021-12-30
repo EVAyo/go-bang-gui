@@ -50,16 +50,17 @@ private:
     bool canRepent;
 
     void setGameMsg(QString,GameState);
-    void setUserName(QString,QString);
+    void setRivalName(QString);
     int getMyColor();
     void paintEvent(QPaintEvent *);
+
     void runGame();
     void runOnlineGame();
 
-    void onlineGameInit();
-    void onlineGameStart(bool,int);
-    void onlineOff();
     void nextStep();
+    void onlineGameInit();
+    void onlineGameStart(int);
+    void onlineOff();
 
     void inviteProcess(QString,QString,int);
     void surrenderProcess(QString);
@@ -67,18 +68,17 @@ private:
     void exceptionProcess(QString);
 
     void showGameOver();
+    void showOnlineUser();
+    void exceptionalGame();
     void winGame();
     void lostGame();
 
 public slots:
+    void selectGameMode();
     void gameStart();
     void giveUpGame();
     void repentGame();
-    void selectGameMode();
     void invitePK();
-    void exceptionalGame();
-
-    void showOnlineUser();
     void recieveMsg();
     void refreshBtnClick();
     void aboutGame();

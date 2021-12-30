@@ -47,7 +47,6 @@ GoBangWidget::GoBangWidget(QWidget *parent)
     ui->UserIco1->setMaximumSize(30*zoom,30*zoom);
     ui->UserIco2->setMaximumSize(30*zoom,30*zoom);
     ui->waitContainer->setFixedSize(30*zoom,30*zoom);
-    setUserName("我方","还是我方");
 
     /*Buttons tool*/
     connect(ui->gameModeBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(selectGameMode()));
@@ -62,6 +61,63 @@ GoBangWidget::~GoBangWidget()
     delete ui;
 }
 
+//set game tip label content
+void GoBangWidget::setGameMsg(QString msg,GameState type)
+{
+    if(type == WaitChess)
+    {
+        QMovie *movie = new QMovie(WaitChessImg);
+        movie->start();
+        ui->waitContainer->setMovie(movie);
+    }
+    else
+    {
+        QImage *img = new QImage();
+        switch (type) {
+        case DownChess:
+                img->load(DownChessImg);
+            break;
+        case ForbidGame:
+                img->load(ForbidGameImg);
+            break;
+        case OverGame:
+                img->load(OverGameImg);
+            break;
+        case WarnGame:
+                img->load(WarningImg);
+            break;
+        default:
+            break;
+        }
+        ui->waitContainer->setPixmap(QPixmap::fromImage(*img));
+    }
+    ui->label_tip->setText(msg);
+}
+//set user name label content
+void GoBangWidget::setRivalName(QString rivalName)
+{
+    ui->UserName2->setText(rivalName);
+    if(online->getIsMaster())
+    {
+        ui->UserIco1->setPixmap(QPixmap(blackChess));
+        ui->UserIco2->setPixmap(QPixmap(whiteChess));
+    }
+    else
+    {
+        ui->UserIco1->setPixmap(QPixmap(whiteChess));
+        ui->UserIco2->setPixmap(QPixmap(blackChess));
+    }
+}
+//get who i am
+int GoBangWidget::getMyColor()
+{
+    if(online->getIsMaster())
+    {
+        return 1;
+    }
+    return -1;
+}
+//paintEvent
 void GoBangWidget::paintEvent(QPaintEvent *)
 {
     QPainter p;
@@ -153,10 +209,11 @@ void GoBangWidget::paintEvent(QPaintEvent *)
     p.end();
 }
 
-void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
+//mousePressEvent
+void GoBangWidget::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton){       // 如果是鼠标左键按下
-        offset = event->globalPos() - pos();    // 获取指针位置和窗口位置的差值
+    if(event->button() == Qt::LeftButton){
+        offset = event->globalPos() - pos();
         clickY = round((offset.x() - 10*zoom)/linesGap);
         clickX = round((offset.y() - 40*zoom)/linesGap);
         qDebug() << "X:" << clickX;
@@ -189,25 +246,24 @@ void GoBangWidget::mousePressEvent(QMouseEvent *event) // 鼠标按下事件
        update();
     }
 }
-
-
-void GoBangWidget::mouseReleaseEvent(QMouseEvent *) // 鼠标松开事件
+// mouseReleaseEvent
+void GoBangWidget::mouseReleaseEvent(QMouseEvent *)
 {
     QCursor cursor;
     cursor.setShape(Qt::ArrowCursor);
-    QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
+    QApplication::setOverrideCursor(cursor);
 }
-
-void GoBangWidget::mouseMoveEvent(QMouseEvent *event) // 鼠标移动事件
+// mouseMoveEvent
+void GoBangWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    offset = event->globalPos() - pos();    // 获取指针位置和窗口位置的差值
+    offset = event->globalPos() - pos();
     moveY = round((offset.x() - 10*zoom)/linesGap);
     moveX = round((offset.y() - 40*zoom)/linesGap);
     QCursor cursor;
     if(moveX>=0&&moveX<linesNum&&moveY>=0&&moveY<linesNum)
     {
         cursor.setShape(Qt::PointingHandCursor);
-        QApplication::setOverrideCursor(cursor); // 使鼠标指针暂时改变形状
+        QApplication::setOverrideCursor(cursor);
     }
     update();
 }
@@ -244,35 +300,31 @@ void GoBangWidget::gameStart()
         isStart = false;
         canPlay = false;
         onlineGameInit();
-        onlineGameStart(true,game.getWhoFirst());
+        onlineGameStart(game.getWhoFirst());
     }
     update();
 }
-
 //start the online game
-void GoBangWidget::onlineGameStart(bool isMaster,int masterColor)
+void GoBangWidget::onlineGameStart(int masterColor)
 {
     game.initGrid(2);
     if(isStart)
     {
-        if(isMaster)    //master
+        if(online->getIsMaster())    //master
         {
-            masterColor==1?setUserName("我方",online->getRivalIP()):
-                           setUserName(online->getRivalIP(),"我方");
             masterColor==1?setGameMsg(QString::fromStdString("请您行棋!"),WaitChess):
                            setGameMsg(QString::fromStdString("等对方行棋!"),WaitChess);
             game.setWhoFirst(masterColor);
             canPlay = true;
         }
-        else            //guest
+        else                        //guest
         {
-            masterColor==-1?setUserName("我方",online->getRivalIP()):
-                            setUserName(online->getRivalIP(),"我方");
             masterColor==-1?setGameMsg(QString::fromStdString("请您行棋!"),WaitChess):
                             setGameMsg(QString::fromStdString("等对方行棋!"),WaitChess);
             game.setWhoFirst(masterColor*-1);
             canPlay = false;
         }
+        setRivalName(online->getRivalIP());
         canRepent = false;
         ui->repentGameBtn->setEnabled(true);
         ui->giveUpBtn->setEnabled(true);
@@ -283,65 +335,6 @@ void GoBangWidget::onlineGameStart(bool isMaster,int masterColor)
         setGameMsg(QString::fromStdString("等待游戏开始!"),WaitChess);
     }
     update();
-}
-
-
-//set game tip label content
-void GoBangWidget::setGameMsg(QString msg,GameState type)
-{
-    if(type == WaitChess)
-    {
-        QMovie *movie = new QMovie(WaitChessImg);
-        movie->start();
-        ui->waitContainer->setMovie(movie);
-    }
-    else
-    {
-        QImage *img = new QImage();
-        switch (type) {
-        case DownChess:
-                img->load(DownChessImg);
-            break;
-        case ForbidGame:
-                img->load(ForbidGameImg);
-            break;
-        case OverGame:
-                img->load(OverGameImg);
-            break;
-        case WarnGame:
-                img->load(WarningImg);
-            break;
-        default:
-            break;
-        }
-        ui->waitContainer->setPixmap(QPixmap::fromImage(*img));
-    }
-    ui->label_tip->setText(msg);
-}
-
-//set user name label content
-void GoBangWidget::setUserName(QString blackName,QString whiteName)
-{
-    if(blackName == "我方")
-    {
-        ui->UserName1->setText("<b>"+blackName+"</b>");
-        ui->UserName2->setText(whiteName);
-    }
-    else
-    {
-        ui->UserName1->setText(blackName);
-        ui->UserName2->setText("<b>"+whiteName+"</b>");
-    }
-}
-
-//get who i am
-int GoBangWidget::getMyColor()
-{
-    if(ui->UserName1->text() == "我方")
-    {
-        return 1;
-    }
-    return -1;
 }
 
 //run game
@@ -365,17 +358,14 @@ void GoBangWidget::runGame()
     }
     update();
 }
-
-
 //run online game
 void GoBangWidget::runOnlineGame()
 {
     if(!game.getIsOver()){
         if (!game.putChess(clickX, clickY)) {
             game.putChess(clickX, clickY);
-        }else{
-            game.checkOver();
         }
+        game.checkOver();
     }
     if(!game.getIsOver())
     {
@@ -395,6 +385,8 @@ void GoBangWidget::runOnlineGame()
     canPlay = false;
     update();
 }
+
+//recieve rival chess positon
 void GoBangWidget::nextStep()
 {
     qDebug() << "next step";
@@ -409,87 +401,18 @@ void GoBangWidget::nextStep()
     game.checkOver();
     if(!game.getIsOver())
     {
-        canRepent = true;
         canPlay= true;
-        QString msg = online->getNextPos().color != getMyColor() ? "请行棋!" : "等对方行棋!";
+        QString msg = "请行棋!";
         setGameMsg(msg,WaitChess);
         game.setCurUser(online->getNextPos().color*-1);
     }
     else
     {
-        canRepent = false;
         canPlay = false;
         isStart = false;
         showGameOver();
     }
-    update();
-}
-
-//show Game Over
-void GoBangWidget::showGameOver()
-{
-    if(game.getGameMode() == 0)
-    {
-        QString res = (game.getCurUser() == 1 ? "黑棋" : "白棋");
-        QString msg = "恭喜" + res + "胜利!游戏结束!";
-        setGameMsg(msg,OverGame);
-        winGame();
-    }
-    if(game.getGameMode() == 2)
-    {
-        QString res = game.getWinPos()[3] == getMyColor()?"对手":"你";
-        QString msg = "恭喜" + res + "赢了!游戏结束!";
-        setGameMsg(msg,OverGame);
-        game.getWinPos()[3] == getMyColor()?winGame():lostGame();
-        online->setUserState(online->getRivalIP(),true);
-        showOnlineUser();
-    }
-}
-//select Game Mode
-void GoBangWidget::selectGameMode()
-{
-    int lastMode = game.getGameMode();
-    int newMode = ui->gameModeBox->currentIndex();
-    switch (newMode) {
-        case 0:
-            if(lastMode == 2)
-            {
-                if(!game.getIsOver())
-                {
-                    exceptionalGame();
-                }
-                else
-                {
-                    online->sendMessage(Online::ParticipantLeft);
-                }
-                onlineOff();
-            }
-            game.initGrid(0);
-            setUserName("我方","还是我方");
-
-            break;
-        case 1:
-            if(lastMode == 2)
-            {
-                if(!game.getIsOver())
-                {
-                    exceptionalGame();
-                }
-                else
-                {
-                    online->sendMessage(Online::ParticipantLeft);
-                }
-                onlineOff();
-            }
-            game.initGrid(1);
-            setUserName("我方","电脑AI");
-            break;
-        case 2:
-            game.initGrid(2);
-            onlineGameInit();
-            setUserName("我方","还没有人");
-            break;
-    }
+    canRepent = false;
     update();
 }
 
@@ -504,7 +427,6 @@ void GoBangWidget::onlineGameInit()
     QString msg = "邀请对手开始对战!";
     setGameMsg(msg,DownChess);
 }
-
 //close online game
 void GoBangWidget::onlineOff()
 {
@@ -519,7 +441,7 @@ void GoBangWidget::onlineOff()
         }
     }
 }
-
+//process recieveMsg
 void GoBangWidget::recieveMsg()
 {
     ChessMsg CM = online->processMsg();
@@ -531,9 +453,13 @@ void GoBangWidget::recieveMsg()
             break;
         case 1:
             //NewParticipant
+//            setGameMsg(CM.ip1+"上线了!",DownChess);
+//            update();
             break;
         case 2:
             //ParticipantLeft
+//            setGameMsg(CM.ip1+"下线了!",DownChess);
+//            update();
             break;
         case 3:
             //Refresh
@@ -569,135 +495,35 @@ void GoBangWidget::recieveMsg()
     update();
 }
 
-
-//give up the game
-void GoBangWidget::giveUpGame()
+//show Game Over
+void GoBangWidget::showGameOver()
 {
-    if(!canRepent)
-    {
-        QString msg = "不能认输了!";
-        setGameMsg(msg,ForbidGame);
-        update();
-        return;
-    }
-    ui->giveUpBtn->setEnabled(false);
-    QString res = "";
     if(game.getGameMode() == 0)
     {
-        res = (game.getCurUser() == -1 ? "黑棋" : "白棋");
-    }
-    else if(game.getGameMode() == 1)
-    {
-
-    }
-    else if(game.getGameMode() == 2)
-    {
-        res = "对方";
-        online->sendMessage(Online::Surrender);
-        lostGame();
-    }
-    QString msg = "你认输了!恭喜" + res + "胜利!";
-    setGameMsg(msg,OverGame);
-    update();
-    game.setIsOver(true);
-    canPlay = false;
-    canRepent = false;
-    isStart = false;
-}
-//surrender Process
-void GoBangWidget::surrenderProcess(QString ip)
-{
-    if(ip == online->getRivalIP())
-    {
-        online->setUserState(ip,false);
-        online->setRivalIP("");
-        isStart = false;
-        canPlay = false;
-        canRepent = false;
-        game.setIsOver(true);
-        QString msg = "对方认输!恭喜你赢了!";
+        QString res = (game.getCurUser() == 1 ? "黑棋" : "白棋");
+        QString msg = "恭喜" + res + "胜利!游戏结束!";
         setGameMsg(msg,OverGame);
-        update();
         winGame();
     }
-}
-
-
-//repent the game
-void GoBangWidget::repentGame()
-{
-    if(!game.getIsOver()&&canRepent)  //game not over&can repent&last is me
+    if(game.getGameMode() == 2)
     {
-        game.setGrid(game.getLastGrid());
-        game.setCurUser(game.getCurUser()*-1);
-        game.setIsOver(false);
-        if(game.getGameMode() == 0)
+        QString res = "你";
+        if(game.getWinPos()[3] == getMyColor())
         {
-            QString msg = game.getCurUser() == 1 ? "黑棋悔棋,请重新落子!" : "白棋悔棋,请重新落子!";
-            setGameMsg(msg,WaitChess);
+            winGame();
         }
-        else if(game.getGameMode() == 1)
+        else
         {
-
+            lostGame();
+            res = "对手";
         }
-        else if(game.getGameMode() == 2&&!canPlay)
-        {
-            QString msg = "悔棋成功,请重新落子!";
-            setGameMsg(msg,WaitChess);
-            online->sendMessage(Online::Repentance);
-        }
-        canPlay = true;
-        canRepent = false;
+        QString msg = "恭喜" + res + "赢了!游戏结束!";
+        setGameMsg(msg,OverGame);
+        online->setUserState(online->getRivalIP(),true);
+        showOnlineUser();
     }
-    else
-    {
-        QString msg = "不能悔棋!";
-        setGameMsg(msg,ForbidGame);
-    }
-    update();
 }
-//repentance Process
-void GoBangWidget::repentProcess(QString ip)
-{
-    if(ip != online->getRivalIP())
-    {
-        return;
-    }
-    game.setGrid(game.getLastGrid());
-    QString msg = "对方悔棋,等待重新落子!";
-    setGameMsg(msg,WaitChess);
-    canPlay = false;
-    canRepent = false;
-    update();
-}
-
-
-//exceptional Game
-void GoBangWidget::exceptionalGame()
-{
-    online->sendMessage(Online::Exception);
-    canPlay = false;
-    canRepent = false;
-    isStart = false;
-    game.setIsOver(true);
-}
-//exception Process
-void GoBangWidget::exceptionProcess(QString ip)
-{
-    if(ip != online->getRivalIP())
-    {
-        return;
-    }
-    QString msg = "对局异常,请重新开始!";
-    setGameMsg(msg,WarnGame);
-    canPlay = false;
-    canRepent = false;
-    isStart = false;
-    game.setIsOver(true);
-    update();
-}
-
-
+//show Online User
 void GoBangWidget::showOnlineUser()
 {
     //clear all item
@@ -743,6 +569,179 @@ void GoBangWidget::showOnlineUser()
     update();
 }
 
+
+//select Game Mode
+void GoBangWidget::selectGameMode()
+{
+    int lastMode = game.getGameMode();
+    int newMode = ui->gameModeBox->currentIndex();
+    switch (newMode) {
+        case 0:
+            if(lastMode == 2)
+            {
+                if(!game.getIsOver())
+                {
+                    exceptionalGame();
+                }
+                else
+                {
+                    online->sendMessage(Online::ParticipantLeft);
+                }
+                onlineOff();
+            }
+            game.initGrid(0);
+            setRivalName("还是我方");
+            break;
+        case 1:
+            if(lastMode == 2)
+            {
+                if(!game.getIsOver())
+                {
+                    exceptionalGame();
+                }
+                else
+                {
+                    online->sendMessage(Online::ParticipantLeft);
+                }
+                onlineOff();
+            }
+            game.initGrid(1);
+            setRivalName("电脑AI");
+            break;
+        case 2:
+            game.initGrid(2);
+            onlineGameInit();
+            setRivalName("还没有人");
+            break;
+    }
+    update();
+}
+
+//give up the game
+void GoBangWidget::giveUpGame()
+{
+    if(!canRepent)
+    {
+        QString msg = "不能认输了!";
+        setGameMsg(msg,ForbidGame);
+        update();
+        return;
+    }
+    ui->giveUpBtn->setEnabled(false);
+    QString res = "";
+    if(game.getGameMode() == 0)
+    {
+        res = (game.getCurUser() == 1 ? "黑棋" : "白棋");
+    }
+    else if(game.getGameMode() == 1)
+    {
+
+    }
+    else if(game.getGameMode() == 2)
+    {
+        res = "对方";
+        online->sendMessage(Online::Surrender);
+        lostGame();
+    }
+    QString msg = "你认输了!恭喜" + res + "胜利!";
+    setGameMsg(msg,OverGame);
+    update();
+    game.setIsOver(true);
+    canPlay = false;
+    canRepent = false;
+    isStart = false;
+}
+//surrender Process
+void GoBangWidget::surrenderProcess(QString ip)
+{
+    if(ip == online->getRivalIP())
+    {
+        online->setUserState(ip,false);
+        online->setRivalIP("");
+        isStart = false;
+        canPlay = false;
+        canRepent = false;
+        game.setIsOver(true);
+        QString msg = "对方认输!恭喜你赢了!";
+        setGameMsg(msg,OverGame);
+        update();
+        winGame();
+    }
+}
+
+//repent the game
+void GoBangWidget::repentGame()
+{
+    if(!game.getIsOver()&&canRepent)  //game not over&can repent&last is me
+    {
+        game.setGrid(game.getLastGrid());
+        game.setCurUser(game.getCurUser()*-1);
+        game.setIsOver(false);
+        if(game.getGameMode() == 0)
+        {
+            QString msg = game.getCurUser() == 1 ? "黑棋悔棋,请重新落子!" : "白棋悔棋,请重新落子!";
+            setGameMsg(msg,WaitChess);
+        }
+        else if(game.getGameMode() == 1)
+        {
+
+        }
+        else if(game.getGameMode() == 2/*&&!canPlay*/)
+        {
+            QString msg = "悔棋成功,请重新落子!";
+            setGameMsg(msg,WaitChess);
+            online->sendMessage(Online::Repentance);
+        }
+        canPlay = true;
+        canRepent = false;
+    }
+    else
+    {
+        QString msg = "不能悔棋!";
+        setGameMsg(msg,ForbidGame);
+    }
+    update();
+}
+//repentance Process
+void GoBangWidget::repentProcess(QString ip)
+{
+    if(ip != online->getRivalIP())
+    {
+        return;
+    }
+    game.setGrid(game.getLastGrid());
+    QString msg = "对方悔棋,等待重新落子!";
+    setGameMsg(msg,WaitChess);
+    canPlay = false;
+    canRepent = false;
+    update();
+}
+
+//exceptional Game
+void GoBangWidget::exceptionalGame()
+{
+    online->sendMessage(Online::Exception);
+    canPlay = false;
+    canRepent = false;
+    isStart = false;
+    game.setIsOver(true);
+}
+//exception Process
+void GoBangWidget::exceptionProcess(QString ip)
+{
+    if(ip != online->getRivalIP())
+    {
+        return;
+    }
+    QString msg = "对局异常,请重新开始!";
+    setGameMsg(msg,WarnGame);
+    canPlay = false;
+    canRepent = false;
+    isStart = false;
+    game.setIsOver(true);
+    update();
+}
+
 //select a user to pk
 void GoBangWidget::invitePK()
 {
@@ -756,7 +755,7 @@ void GoBangWidget::invitePK()
     online->setUserState(online->getMyIP(),false);
     online->setUserState(online->getRivalIP(),false);
     isStart = true;
-    onlineGameStart(true,game.getWhoFirst());
+    onlineGameStart(game.getWhoFirst());
 }
 //Process a pk
 void GoBangWidget::inviteProcess(QString ip1,QString ip2,int color)
@@ -771,13 +770,13 @@ void GoBangWidget::inviteProcess(QString ip1,QString ip2,int color)
             online->setRivalIP(ip1);
             online->setUserState(online->getMyIP(),false);
             online->setUserState(online->getRivalIP(),false);
+            online->setIsMaster(false);
             showOnlineUser();
             isStart = true;
-            onlineGameStart(false,color);
+            onlineGameStart(color);
         }
     }
 }
-
 
 // refresh user
 void GoBangWidget::refreshBtnClick()
@@ -789,7 +788,6 @@ void GoBangWidget::refreshBtnClick()
         showOnlineUser();
     }
 }
-
 
 //quit the game
 void GoBangWidget::closeEvent(QCloseEvent *event)
@@ -820,7 +818,6 @@ void GoBangWidget::closeEvent(QCloseEvent *event)
     }
     event->ignore();
 }
-
 //win the game
 void GoBangWidget::winGame()
 {

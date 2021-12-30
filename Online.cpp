@@ -24,6 +24,7 @@ Online::~Online()
 void Online::init()
 {
     setNextPos("",-1,-1,0);
+    setIsMaster(true);
     myIpAddress = getIP();
     sendMessage(NewParticipant);
 }
@@ -36,6 +37,16 @@ QUdpSocket * Online::getSocket()
 bool Online::getOnlineState()
 {
     return onlineRun;
+}
+
+//set and get am i master
+void Online::setIsMaster(bool value)
+{
+    isMaster = value;
+}
+bool Online::getIsMaster()
+{
+    return isMaster;
 }
 
 //get my ip
@@ -213,18 +224,18 @@ ChessMsg Online::processMsg()
             setNextPos(ipAddress,i,j,color);
             return {0,ipAddress,"",i,j,color};
             break;
-
         case NewParticipant:
             in >>ipAddress;
             qDebug() << "in NewParticipant:";
             addOnlineUser(ipAddress);
             sendMessage(Refresh);
+            return {1,ipAddress,"",-1,-1,0};
             break;
-
         case ParticipantLeft:
             in >> ipAddress;
             qDebug() << "in ParticipantLeft:";
             delOnlineUser(ipAddress);
+            return {2,ipAddress,"",-1,-1,0};
             break;
         case Refresh:
             in >> ipAddress;
