@@ -352,10 +352,10 @@ void GoBangWidget::runGame()
         setGameMsg(msg,WaitChess);
         if (!game.putChess(clickX, clickY)) {
             game.putChess(clickX, clickY);
-        }else{
-            game.checkOver();
-            canRepent = true;
         }
+        game.checkOver();
+        canRepent = true;
+        canPlay = true;
     }
     if(game.getIsOver())
     {
@@ -626,7 +626,7 @@ void GoBangWidget::surrenderProcess(QString ip)
 //repent the game
 void GoBangWidget::repentGame()
 {
-    if(!game.getIsOver()&&canRepent&&!canPlay)  //game not over&can repent&last is me
+    if(!game.getIsOver()&&canRepent)  //game not over&can repent&last is me
     {
         game.setGrid(game.getLastGrid());
         game.setCurUser(game.getCurUser()*-1);
@@ -640,7 +640,7 @@ void GoBangWidget::repentGame()
         {
 
         }
-        else if(game.getGameMode() == 2)
+        else if(game.getGameMode() == 2&&!canPlay)
         {
             QString msg = "悔棋成功,请重新落子!";
             setGameMsg(msg,WaitChess);
@@ -854,6 +854,6 @@ void GoBangWidget::aboutGame()
     msgBox.setDefaultButton(QMessageBox::Yes);
     msgBox.setIconPixmap(QPixmap(":/chess/imgs/about.png"));
     msgBox.setText("<br>五子棋(x64)");
-    msgBox.setInformativeText("<br>Linpure 2021<br>主页：<a href=\"https://gitee.com/linpure\" style='text-decoration:none;'>Gitee</a>");
+    msgBox.setInformativeText("Base:C++ Qt<br>By:Linpure<br>Date:2021-12<br>主页：<a href=\"https://gitee.com/linpure\" style='text-decoration:none;'>Gitee</a>");
     msgBox.exec();
 }

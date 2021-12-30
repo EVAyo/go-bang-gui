@@ -179,7 +179,9 @@ void Online::sendMessage(MessageType type,ChessMsg CMsg)
         out << getMyIP();
         break;
     }
-    udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
+    qDebug() << "send data size:" << data.length();
+    int size = udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
+    qDebug() << "success data size:" << size;
 }
 
 
@@ -193,6 +195,8 @@ ChessMsg Online::processMsg()
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size());
         QDataStream in(&datagram, QIODevice::ReadOnly);
+        qDebug() << "pendingDatagramSize" << int(udpSocket->pendingDatagramSize());
+        qDebug() << "recieve data size:" << datagram.size();
         int messageType;
         in >> messageType;
         QString ipAddress;
