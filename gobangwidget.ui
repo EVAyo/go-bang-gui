@@ -75,9 +75,6 @@
         <property name="scaledContents">
          <bool>true</bool>
         </property>
-        <property name="buddy">
-         <cstring></cstring>
-        </property>
        </widget>
       </item>
      </layout>
@@ -135,9 +132,6 @@
         <property name="openExternalLinks">
          <bool>false</bool>
         </property>
-        <property name="buddy">
-         <cstring></cstring>
-        </property>
        </widget>
       </item>
      </layout>
@@ -148,6 +142,153 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>选择模式：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="gameModeBox">
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="currentText">
+         <string>人人对战</string>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>人人对战</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>人机对战</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>在线对战</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>电脑难度：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="difficultyBox">
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>ArrowCursor</cursorShape>
+        </property>
+        <property name="currentText">
+         <string>简单难度</string>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>入门难度</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>简单难度</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>中等难度</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>困难难度</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>大师难度</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>专家难度</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -183,9 +324,6 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
         <item>
          <property name="text">
           <string>黑棋先行</string>
@@ -200,72 +338,6 @@
       </item>
       <item>
        <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="font">
-         <font>
-          <family>微软雅黑</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>选择模式：</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="gameModeBox">
-        <property name="font">
-         <font>
-          <family>宋体</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="currentText">
-         <string>人人对战</string>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>人人对战</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>人机对战</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>在线对战</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -347,9 +419,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_4">
+       <widget class="QPushButton" name="manualBtn">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -373,7 +445,7 @@
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
-         <string>匹配</string>
+         <string>说明</string>
         </property>
        </widget>
       </item>
@@ -509,7 +581,7 @@
        </font>
       </property>
       <property name="autoFillBackground">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="styleSheet">
        <string notr="true">color: rgb(255, 39, 32);</string>
@@ -555,11 +627,8 @@
       <property name="verticalSpacing">
        <number>0</number>
       </property>
-      <item row="4" column="1">
-       <widget class="QPushButton" name="giveUpBtn">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+      <item row="4" column="0">
+       <widget class="QPushButton" name="repentGameBtn">
         <property name="minimumSize">
          <size>
           <width>40</width>
@@ -575,14 +644,8 @@
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
         <property name="text">
-         <string>认输</string>
+         <string>悔棋</string>
         </property>
        </widget>
       </item>
@@ -651,8 +714,11 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QPushButton" name="repentGameBtn">
+      <item row="4" column="1">
+       <widget class="QPushButton" name="giveUpBtn">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>40</width>
@@ -668,8 +734,14 @@
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>悔棋</string>
+         <string>认输</string>
         </property>
        </widget>
       </item>
@@ -687,19 +759,6 @@
        </spacer>
       </item>
      </layout>
-    </item>
-    <item>
-     <spacer name="verticalSpacer_6">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-     </spacer>
     </item>
    </layout>
   </widget>

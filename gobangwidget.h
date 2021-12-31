@@ -55,6 +55,7 @@ private:
     void paintEvent(QPaintEvent *);
 
     void runGame();
+    void runAIGame();
     void runOnlineGame();
 
     void nextStep();
@@ -75,6 +76,7 @@ private:
 
 public slots:
     void selectGameMode();
+    void selectAILevel();
     void gameStart();
     void giveUpGame();
     void repentGame();
@@ -82,6 +84,7 @@ public slots:
     void recieveMsg();
     void refreshBtnClick();
     void aboutGame();
+    void manualGame();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
